@@ -15,7 +15,10 @@ func main() {
 		log.Fatal(err)
 	}
 	defer db.Close()
+	migrate(db)
+}
 
+func migrate(db *gorm.DB) {
 	db.AutoMigrate(&Artist{})
 	db.AutoMigrate(&Year{})
 	db.AutoMigrate(&Album{})

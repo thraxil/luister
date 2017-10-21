@@ -2,6 +2,12 @@
 
 
 [[projects]]
+  branch = "master"
+  name = "github.com/dhowden/tag"
+  packages = ["."]
+  revision = "e24fc33f60efdb62f5894e1ae0224b03ceb32786"
+
+[[projects]]
   name = "github.com/jinzhu/gorm"
   packages = [".","dialects/postgres"]
   revision = "5174cc5c242a728b435ea2be8a2f7f998e15429b"
@@ -22,6 +28,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "ba778e1163bf6771aaf306afaed6c1e61ee56adafbda26db0ef538f157d661ee"
+  inputs-digest = "890ffbb1943a275ad0d99ea3f4f4dd49b05b65bd964cd289287afcce30cc56d6"
   solver-name = "gps-cdcl"
   solver-version = 1

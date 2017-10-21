@@ -6,16 +6,15 @@ type Artist struct {
 	gorm.Model
 	Name string `gorm:"unique_index"`
 
-	Albums []Album `gorm:"many2many:album_artists;"`
+	Albums []Album
 	Songs  []Song
 }
 
 type Album struct {
 	gorm.Model
-	Name string
-
-	Artists []Artist `gorm:"many2many:album_artists;"`
-	YearID  int      `gorm:"index"`
+	Name     string
+	ArtistID uint `gorm:"index"`
+	YearID   int  `gorm:"index"`
 }
 
 type Year struct {
@@ -29,9 +28,9 @@ type Year struct {
 type Song struct {
 	gorm.Model
 	Title    string
-	ArtistID int `gorm:"index"`
-	AlbumID  int `gorm:"index"`
-	YearID   int `gorm:"index"`
+	ArtistID uint `gorm:"index"`
+	AlbumID  uint `gorm:"index"`
+	YearID   int  `gorm:"index"`
 	Track    int
 
 	Plays []Play
@@ -40,24 +39,23 @@ type Song struct {
 
 type File struct {
 	gorm.Model
-	SongID   int `gorm:"index"`
+	SongID   uint `gorm:"index"`
 	Filename string
 	Format   string
 	Filetype string
 	Hash     string
-	Bitrate  int
 	Filesize int
 }
 
 type Play struct {
 	gorm.Model
-	SongID int `gorm:"index"`
+	SongID uint `gorm:"index"`
 }
 
 type Rating struct {
 	gorm.Model
 	Rating int
-	SongID int `gorm:"index"`
+	SongID uint `gorm:"index"`
 }
 
 type Tag struct {

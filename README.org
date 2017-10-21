@@ -1,0 +1,17 @@
+* Luister
+
+Luister is a simple web-based music library.
+
+I used to be a music blogger and have a very large library of mp3 and
+ogg files. Regular music library software doesn't do what I want/need
+it to, so I've gone through a few iterations of my own. This is the
+latest. [[https://github.com/thraxil/maut/][maut]] was the previous.
+
+This version is written in Go, uses [[https://github.com/thraxil/cask/][cask]] to store the actual files,
+and uses [[https://www.cockroachlabs.com/][CockroachDB]] for the metadata.
+
+I run it locally and access it through a browser. Not much more to say
+about it.
+
+It's pretty specific to my needs. If you're looking for music library
+software, this probably isn't what you want.

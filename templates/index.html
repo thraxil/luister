@@ -13,7 +13,7 @@ Total Songs: {{.TotalSongs}}
         <tr>
             <td><a href="{{.URL}}">{{.Title}}</a></td>
             <td>{{.Artist.Name}}</td>
-            <td>{{.Album.Name}}</td>
+            <td><a href="{{.Album.URL}}">{{.Album.Name}}</a></td>
         </tr>
         {{ end }}
     </tbody>

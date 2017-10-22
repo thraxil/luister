@@ -22,6 +22,12 @@ type Album struct {
 	YearID   int  `gorm:"index"`
 	Artist   Artist
 	Year     Year
+
+	Songs []Song
+}
+
+func (a Album) URL() string {
+	return fmt.Sprintf("/al/%d/", a.ID)
 }
 
 type Year struct {

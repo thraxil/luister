@@ -74,6 +74,32 @@ func (s Server) PlayHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "ok")
 }
 
+type albumPage struct {
+	Title string
+	Album Album
+	Songs []Song
+}
+
+func (s Server) AlbumHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	albumID := vars["album"]
+
+	var album Album
+	s.DB.Preload("Artist").Preload("Year").First(&album, albumID)
+
+	var songs []Song
+
+	s.DB.Model(&album).Order("track asc").Related(&songs)
+
+	p := albumPage{
+		Title: album.Name,
+		Album: album,
+		Songs: songs,
+	}
+	t := getTemplate("album.html")
+	t.Execute(w, p)
+}
+
 func getTemplate(filename string) *template.Template {
 	var t = template.New("base.html")
 	return template.Must(t.ParseFiles(

@@ -52,6 +52,12 @@ type Song struct {
 	Artist Artist
 	Album  Album
 	Year   Year
+	Files  []File
+}
+
+func (s Song) HakmesURL() string {
+	// assumes that Files has been preloaded
+	return s.Files[0].HakmesURL()
 }
 
 func (s Song) URL() string {

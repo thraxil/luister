@@ -88,8 +88,7 @@ func (s Server) AlbumHandler(w http.ResponseWriter, r *http.Request) {
 	s.DB.Preload("Artist").Preload("Year").First(&album, albumID)
 
 	var songs []Song
-
-	s.DB.Model(&album).Order("track asc").Related(&songs)
+	s.DB.Model(&album).Order("track asc").Preload("Files").Related(&songs)
 
 	p := albumPage{
 		Title: album.Name,

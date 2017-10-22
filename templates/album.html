@@ -19,14 +19,21 @@
     <tr>
         <th>Songs</th>
         <td>
-            <table class="table table-striped table-condensed">
-                {{range .Songs}}
-                <tr>
+            <audio id="audio" preload="auto" controls="">
+            </audio>
+
+            <table class="table table-striped table-condensed" id="songs">
+                {{range $index, $song := .Songs}}
+                <tr id="song-{{$song.ID}}">
                     <td>
-                        {{.Track}}
+                        <a onclick="playTrack({{$index}}); return false;">
+                            <span class="glyphicon glyphicon-play"></span></a>
                     </td>
                     <td>
-                        <a href="{{.URL}}">{{.Title}}</a>
+                        {{$song.Track}}
+                    </td>
+                    <td>
+                        <a href="{{$song.URL}}">{{$song.Title}}</a>
                     </td>
                 </tr>
                 {{end}}
@@ -34,5 +41,64 @@
         </td>
     </tr>
 </table>
+
+
+<script>
+
+ var tracks = [];
+ {{ range .Songs}}
+ tracks.push({
+     "id": "{{.ID}}",
+     "track": {{.Track}},
+     "name": "{{.Title}}",
+     "url": "{{.HakmesURL}}",
+     "playURL": "{{.PlayURL}}"
+ });
+ {{ end }}
+
+ var playing = false;
+ var index = 0;
+ var cnt = tracks.length;
+ 
+ var a = document.getElementsByTagName("audio")[0];
+ a.addEventListener("play", function() {
+     playing = true;
+     var xhttp = new XMLHttpRequest();
+     xhttp.open("GET", tracks[index].playURL, true);
+     xhttp.send();
+ }, true);
+ a.addEventListener("pause", function() {
+     playing = false;
+ })
+ a.addEventListener("ended", function() {
+     if ((index + 1) < cnt) {
+         index++;
+         loadTrack(index);
+         a.play();
+     } else {
+         audio.pause();
+         index = 0;
+         loadTrack(index);
+     }
+ });
+ var loadTrack = function(idx) {
+     audio.src = tracks[idx].url;
+     var rows = document.getElementsByTagName("tr");
+     for (var i=0; i<rows.length; i++) {
+         rows[i].classList.remove("info");
+     }
+     
+     var row = document.getElementById("song-" + tracks[idx].id);
+     row.classList.add("info");
+ }
+ loadTrack(index);
+
+ var playTrack = function(idx) {
+     loadTrack(idx);
+     a.play();
+ }
+</script>
+
+
 
 {{end}}

@@ -1,0 +1,24 @@
+{{define "title"}}{{.Title}}{{end}}
+
+{{define "content"}}
+
+<table class="table">
+    <tr>
+        <th>Artist</th>
+        <td>{{.Song.Artist.Name}}</td>
+    </tr>
+    <tr>
+        <th>Album</th>
+        <td>{{.Song.Album.Name}}</td>
+    </tr>
+    <tr>
+        <th>Year</th>
+        <td>{{.Song.Year.Year}}</td>
+    </tr>
+    <tr>
+        <th>Title</th>
+        <td>{{.Song.Track}}: {{.Song.Title}}</td>
+    </tr>
+</table>
+
+{{end}}

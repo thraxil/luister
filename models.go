@@ -1,6 +1,10 @@
 package main
 
-import "github.com/jinzhu/gorm"
+import (
+	"fmt"
+
+	"github.com/jinzhu/gorm"
+)
 
 type Artist struct {
 	gorm.Model
@@ -41,6 +45,10 @@ type Song struct {
 	Artist Artist
 	Album  Album
 	Year   Year
+}
+
+func (s Song) URL() string {
+	return fmt.Sprintf("/s/%d/", s.ID)
 }
 
 type File struct {

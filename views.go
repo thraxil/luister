@@ -5,6 +5,7 @@ import (
 	"path/filepath"
 	"text/template"
 
+	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 )
 
@@ -34,6 +35,26 @@ func (s Server) IndexHandler(w http.ResponseWriter, r *http.Request) {
 		RecentSongs: songs,
 	}
 	t := getTemplate("index.html")
+	t.Execute(w, p)
+}
+
+type songPage struct {
+	Title string
+	Song  Song
+}
+
+func (s Server) SongHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	songID := vars["song"]
+
+	var song Song
+	s.DB.Preload("Artist").Preload("Album").Preload("Year").First(&song, songID)
+
+	p := songPage{
+		Title: song.Title,
+		Song:  song,
+	}
+	t := getTemplate("song.html")
 	t.Execute(w, p)
 }
 

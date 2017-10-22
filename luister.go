@@ -38,6 +38,7 @@ func main() {
 	s := Server{DB: db}
 	r := mux.NewRouter()
 	r.HandleFunc("/", s.IndexHandler)
+	r.HandleFunc("/s/{song}/", s.SongHandler)
 
 	log.Fatal(http.ListenAndServe(":8009", r))
 }

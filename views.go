@@ -1,8 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 	"path/filepath"
+	"strconv"
 	"text/template"
 
 	"github.com/gorilla/mux"
@@ -61,6 +63,15 @@ func (s Server) SongHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	t := getTemplate("song.html")
 	t.Execute(w, p)
+}
+
+func (s Server) PlayHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	songID, _ := strconv.Atoi(vars["song"])
+
+	play := Play{SongID: uint(songID)}
+	s.DB.Create(&play)
+	fmt.Fprintf(w, "ok")
 }
 
 func getTemplate(filename string) *template.Template {

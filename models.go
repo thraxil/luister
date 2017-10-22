@@ -52,6 +52,10 @@ func (s Song) URL() string {
 	return fmt.Sprintf("/s/%d/", s.ID)
 }
 
+func (s Song) PlayURL() string {
+	return fmt.Sprintf("/p/%d/", s.ID)
+}
+
 type File struct {
 	gorm.Model
 	SongID   uint   `gorm:"index"`

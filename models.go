@@ -39,9 +39,9 @@ type Song struct {
 
 type File struct {
 	gorm.Model
-	SongID   uint `gorm:"index"`
-	Filename string
-	Format   string
+	SongID   uint   `gorm:"index"`
+	Filename string `gorm:"index"`
+	Format   string `gorm:"index"`
 	Filetype string
 	Hash     string
 	Filesize int

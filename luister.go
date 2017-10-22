@@ -73,8 +73,19 @@ func importcsv(db *gorm.DB) {
 }
 
 func importFile(db *gorm.DB, filename, sha1 string, size string) {
-	// get the file from hakmes
+	// skip if we already have this file
+	var cnt int
+	db.Model(&File{}).Where("filename = ?", filename).Or("hash = ?", sha1).Count(&cnt)
+	if cnt > 0 {
+		fmt.Println("already have it")
+		return
+	}
 	ext := filepath.Ext(filename)
+	// skip some obvious/common non music files
+	if ext == ".nfo" || ext == ".jpg" || ext == ".jpeg" || ext == ".sfv" || ext == ".m3u" || ext == ".txt" || ext == ".ini" {
+		return
+	}
+	// get the file from hakmes
 	url := hakmesURL(sha1, ext)
 	data, err := getFromHakmes(url)
 	if err != nil {

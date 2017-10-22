@@ -15,6 +15,8 @@ type Album struct {
 	Name     string
 	ArtistID uint `gorm:"index"`
 	YearID   int  `gorm:"index"`
+	Artist   Artist
+	Year     Year
 }
 
 type Year struct {
@@ -35,6 +37,10 @@ type Song struct {
 
 	Plays []Play
 	Tags  []Tag `gorm:"many2many:song_tags"`
+
+	Artist Artist
+	Album  Album
+	Year   Year
 }
 
 type File struct {
@@ -45,17 +51,21 @@ type File struct {
 	Filetype string
 	Hash     string
 	Filesize int
+
+	Song Song
 }
 
 type Play struct {
 	gorm.Model
 	SongID uint `gorm:"index"`
+	Song   Song
 }
 
 type Rating struct {
 	gorm.Model
 	Rating int
 	SongID uint `gorm:"index"`
+	Song   Song
 }
 
 type Tag struct {

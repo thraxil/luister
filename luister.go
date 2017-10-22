@@ -15,6 +15,7 @@ import (
 	"strconv"
 
 	"github.com/dhowden/tag"
+	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
@@ -33,6 +34,15 @@ func main() {
 	if *imp {
 		importcsv(db)
 	}
+
+	r := mux.NewRouter()
+	r.HandleFunc("/", IndexHandler)
+
+	log.Fatal(http.ListenAndServe(":8009", r))
+}
+
+func IndexHandler(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("hello\n"))
 }
 
 func migrate(db *gorm.DB) {

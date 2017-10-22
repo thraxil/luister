@@ -2,10 +2,13 @@ package main
 
 import (
 	"net/http"
+	"path/filepath"
 	"text/template"
 
 	"github.com/jinzhu/gorm"
 )
+
+var templateDir = "templates"
 
 type Server struct {
 	DB *gorm.DB
@@ -30,6 +33,14 @@ func (s Server) IndexHandler(w http.ResponseWriter, r *http.Request) {
 		TotalSongs:  cnt,
 		RecentSongs: songs,
 	}
-	t, _ := template.New("index").Parse(indexTemplate)
+	t := getTemplate("index.html")
 	t.Execute(w, p)
+}
+
+func getTemplate(filename string) *template.Template {
+	var t = template.New("base.html")
+	return template.Must(t.ParseFiles(
+		filepath.Join(templateDir, "base.html"),
+		filepath.Join(templateDir, filename),
+	))
 }

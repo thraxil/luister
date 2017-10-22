@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/csv"
 	"errors"
+	"flag"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -19,6 +20,9 @@ import (
 )
 
 func main() {
+	var imp = flag.Bool("import", false, "import from csv")
+	flag.Parse()
+
 	const addr = "postgresql://luister@localhost:26257/luister?sslmode=disable"
 	db, err := gorm.Open("postgres", addr)
 	if err != nil {
@@ -26,7 +30,9 @@ func main() {
 	}
 	defer db.Close()
 	migrate(db)
-	importcsv(db)
+	if *imp {
+		importcsv(db)
+	}
 }
 
 func migrate(db *gorm.DB) {

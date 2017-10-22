@@ -41,6 +41,7 @@ func (s Server) IndexHandler(w http.ResponseWriter, r *http.Request) {
 type songPage struct {
 	Title string
 	Song  Song
+	File  File
 }
 
 func (s Server) SongHandler(w http.ResponseWriter, r *http.Request) {
@@ -50,9 +51,13 @@ func (s Server) SongHandler(w http.ResponseWriter, r *http.Request) {
 	var song Song
 	s.DB.Preload("Artist").Preload("Album").Preload("Year").First(&song, songID)
 
+	var file File
+	s.DB.Where("song_id = ?", songID).First(&file)
+
 	p := songPage{
 		Title: song.Title,
 		Song:  song,
+		File:  file,
 	}
 	t := getTemplate("song.html")
 	t.Execute(w, p)

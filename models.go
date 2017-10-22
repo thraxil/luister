@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"path/filepath"
 
 	"github.com/jinzhu/gorm"
 )
@@ -61,6 +62,11 @@ type File struct {
 	Filesize int
 
 	Song Song
+}
+
+func (f File) HakmesURL() string {
+	ext := filepath.Ext(f.Filename)
+	return "http://localhost:9300/file/" + f.Hash + "/file" + ext
 }
 
 type Play struct {

@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"math/rand"
 	"net/http"
 	"path/filepath"
 	"strconv"
@@ -181,12 +180,8 @@ type randomPage struct {
 func (s Server) RandomHandler(w http.ResponseWriter, r *http.Request) {
 	songs := make([]Song, 10)
 
-	var cnt int
-	s.DB.Model(&Song{}).Count(&cnt)
-
 	for i := 0; i < 10; i++ {
-		r := rand.Intn(cnt)
-		s.DB.Model(&Song{}).Limit(1).Offset(r).Preload("Files").Preload("Artist").Preload("Album").Find(&songs[i])
+		s.DB.Model(&Song{}).Order("random()").Limit(1).Preload("Files").Preload("Artist").Preload("Album").Find(&songs[i])
 	}
 
 	p := randomPage{

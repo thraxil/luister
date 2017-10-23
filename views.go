@@ -99,6 +99,31 @@ func (s Server) AlbumHandler(w http.ResponseWriter, r *http.Request) {
 	t.Execute(w, p)
 }
 
+type artistPage struct {
+	Title  string
+	Artist Artist
+	Albums []Album
+}
+
+func (s Server) ArtistHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	artistID := vars["artist"]
+
+	var artist Artist
+	s.DB.First(&artist, artistID)
+
+	var albums []Album
+	s.DB.Model(&artist).Preload("Year").Related(&albums)
+
+	p := artistPage{
+		Title:  artist.Name,
+		Artist: artist,
+		Albums: albums,
+	}
+	t := getTemplate("artist.html")
+	t.Execute(w, p)
+}
+
 func getTemplate(filename string) *template.Template {
 	var t = template.New("base.html")
 	return template.Must(t.ParseFiles(

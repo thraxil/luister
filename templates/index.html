@@ -12,7 +12,7 @@ Total Songs: {{.TotalSongs}}
         {{ range .RecentSongs }}
         <tr>
             <td><a href="{{.URL}}">{{.Title}}</a></td>
-            <td>{{.Artist.Name}}</td>
+            <td><a href="{{.Artist.URL}}">{{.Artist.Name}}</a></td>
             <td><a href="{{.Album.URL}}">{{.Album.Name}}</a></td>
         </tr>
         {{ end }}

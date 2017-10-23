@@ -15,6 +15,10 @@ type Artist struct {
 	Songs  []Song
 }
 
+func (a Artist) URL() string {
+	return fmt.Sprintf("/ar/%d/", a.ID)
+}
+
 type Album struct {
 	gorm.Model
 	Name     string

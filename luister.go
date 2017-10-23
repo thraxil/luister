@@ -45,6 +45,8 @@ func main() {
 	r.HandleFunc("/search/", s.SearchHandler)
 	r.HandleFunc("/random/", s.RandomHandler)
 
+	r.HandleFunc("/api/random/", s.SingleRandomHandler)
+
 	log.Fatal(http.ListenAndServe(":8009", r))
 }
 

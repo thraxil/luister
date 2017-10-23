@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"path/filepath"
@@ -178,9 +179,10 @@ type randomPage struct {
 }
 
 func (s Server) RandomHandler(w http.ResponseWriter, r *http.Request) {
-	songs := make([]Song, 10)
+	n := 10
+	songs := make([]Song, n)
 
-	for i := 0; i < 10; i++ {
+	for i := 0; i < n; i++ {
 		s.DB.Model(&Song{}).Order("random()").Limit(1).Preload("Files").Preload("Artist").Preload("Album").Find(&songs[i])
 	}
 
@@ -190,6 +192,42 @@ func (s Server) RandomHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	t := getTemplate("random.html")
 	t.Execute(w, p)
+}
+
+type randomSong struct {
+	Title     string
+	Track     int
+	SongURL   string
+	Artist    string
+	ArtistURL string
+	Album     string
+	AlbumURL  string
+	URL       string
+	ID        uint
+}
+
+func (s Server) SingleRandomHandler(w http.ResponseWriter, r *http.Request) {
+	var song Song
+
+	s.DB.Model(&Song{}).Order("random()").Limit(1).Preload(
+		"Files").Preload(
+		"Artist").Preload("Album").Find(&song)
+
+	p := randomSong{
+		Title:     song.Title,
+		Track:     song.Track,
+		SongURL:   song.URL(),
+		Artist:    song.Artist.Name,
+		ArtistURL: song.Artist.URL(),
+		Album:     song.Album.Name,
+		AlbumURL:  song.Album.URL(),
+		URL:       song.HakmesURL(),
+		ID:        song.ID,
+	}
+
+	b, _ := json.Marshal(p)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(b)
 }
 
 func getTemplate(filename string) *template.Template {

@@ -14,7 +14,7 @@
             <th>Album</th>
         </tr>
     </thead>
-    <tbody>
+    <tbody id="songs-tbody">
     {{range $index, $song := .Songs}}
     <tr id="song-{{$song.ID}}">
         <td>
@@ -32,6 +32,7 @@
     </tbody>
 </table>
 
+<button onclick="newTrack()">+</button>
 
 <script>
 
@@ -65,6 +66,7 @@
          index++;
          loadTrack(index);
          a.play();
+         newTrack();
      } else {
          audio.pause();
          index = 0;
@@ -86,7 +88,84 @@
  var playTrack = function(idx) {
      loadTrack(idx);
      a.play();
- }
+ };
+
+ var newTrack = function() {
+     var xhttp = new XMLHttpRequest();
+     xhttp.onreadystatechange = function() {
+         if (this.readyState == 4 && this.status == 200) {
+             // Typical action to be performed when the document is ready:
+             var track = JSON.parse(xhttp.responseText);
+             addTrack(track);
+         }
+     };
+     xhttp.open("GET", "/api/random/", true);
+     xhttp.send();
+ };
+ 
+ var addTrack = function(track) {
+     tracks.push({
+         "id": track.ID,
+         "track": track.Track,
+         "name": track.Title,
+         "url": track.URL,
+         "playURL": "/p/" + track.ID + "/"
+     });
+     cnt = tracks.length;
+     var currentTrack = cnt;
+     // add row to the table
+     var tbody = document.getElementById("songs-tbody");
+
+     var glyph = document.createElement('span');
+     glyph.classList.add("glyphicon");
+     glyph.classList.add("glyphicon-play");
+     
+     var playbutton = document.createElement("a");
+     playbutton.setAttribute('href', '#');
+     playbutton.addEventListener('click', function () {
+         playTrack(currentTrack); return false;
+     });
+     playbutton.appendChild(glyph);
+
+     var buttonTD = document.createElement("td");
+     buttonTD.appendChild(playbutton);
+     
+     var titleTD = document.createElement("td");
+     var titleA = document.createElement("a");
+     titleA.setAttribute("href", track.SongURL);
+     titleA.textContent = track.Title;
+     titleTD.appendChild(titleA);
+     
+     var artistTD = document.createElement("td");
+     var artistA = document.createElement("a");
+     artistA.setAttribute("href", track.ArtistURL);
+     artistA.textContent = track.Artist;
+     artistTD.appendChild(artistA);
+     
+     var albumTD = document.createElement("td");
+     var albumA = document.createElement("a");
+     albumA.setAttribute("href", track.AlbumURL);
+     albumA.textContent = track.Album;
+     albumTD.appendChild(albumA);
+     
+     var tr = document.createElement('tr');
+     tr.setAttribute("id", "song-" + track.ID);
+     
+     tr.appendChild(buttonTD);
+     tr.appendChild(titleTD);
+     tr.appendChild(artistTD);
+     tr.appendChild(albumTD);
+
+     tbody.append(tr);
+
+     // remove first row in table
+     var firstRow = tbody.getElementsByTagName("tr")[0];
+     tbody.removeChild(firstRow);
+
+     // and move the "play head"
+     firstRow = tbody.getElementsByTagName("tr")[0];
+     firstRow.classList.add("active");
+ };
 </script>
 
 

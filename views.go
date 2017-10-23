@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"math/rand"
 	"net/http"
 	"path/filepath"
 	"strconv"
@@ -169,6 +170,30 @@ func (s Server) SearchHandler(w http.ResponseWriter, r *http.Request) {
 		Songs:   songs,
 	}
 	t := getTemplate("search.html")
+	t.Execute(w, p)
+}
+
+type randomPage struct {
+	Title string
+	Songs []Song
+}
+
+func (s Server) RandomHandler(w http.ResponseWriter, r *http.Request) {
+	songs := make([]Song, 10)
+
+	var cnt int
+	s.DB.Model(&Song{}).Count(&cnt)
+
+	for i := 0; i < 10; i++ {
+		r := rand.Intn(cnt)
+		s.DB.Model(&Song{}).Limit(1).Offset(r).Preload("Files").Preload("Artist").Preload("Album").Find(&songs[i])
+	}
+
+	p := randomPage{
+		Title: "random playlist",
+		Songs: songs,
+	}
+	t := getTemplate("random.html")
 	t.Execute(w, p)
 }
 

@@ -119,7 +119,7 @@ func (s Server) ArtistHandler(w http.ResponseWriter, r *http.Request) {
 	s.DB.First(&artist, artistID)
 
 	var albums []Album
-	s.DB.Model(&artist).Preload("Year").Related(&albums)
+	s.DB.Model(&artist).Preload("Year").Order("upper(name) asc").Related(&albums)
 
 	p := artistPage{
 		Title:  artist.Name,

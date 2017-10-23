@@ -5,6 +5,26 @@
     </head>
     <body>
         <div class="container">
+            <nav class="navbar navbar-default">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="/">
+                        <span class="glyphicon glyphicon-home"></span>
+                    </a>
+                </div>
+
+                <form class="navbar-form navbar-right">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="search" />
+                    </div>
+                </form>
+                
+                <ul class="nav navbar-nav">
+                    <li><a href="">Artists</a></li>
+                    <li><a href="">Random</a></li>                    
+                </ul>
+            </nav>
+
+            
             {{template "content" .}}
         </div>
     </body>

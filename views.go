@@ -18,15 +18,19 @@ type Server struct {
 }
 
 type indexPage struct {
-	Title       string
-	TotalSongs  int
-	RecentSongs []Song
-	RecentPlays []Play
+	Title        string
+	TotalSongs   int
+	TotalArtists int
+	RecentSongs  []Song
+	RecentPlays  []Play
 }
 
 func (s Server) IndexHandler(w http.ResponseWriter, r *http.Request) {
 	var cnt int
 	s.DB.Model(&Song{}).Count(&cnt)
+
+	var artistCnt int
+	s.DB.Model(&Artist{}).Count(&artistCnt)
 
 	var songs []Song
 	s.DB.Limit(10).Order("created_at desc").Preload(
@@ -37,10 +41,11 @@ func (s Server) IndexHandler(w http.ResponseWriter, r *http.Request) {
 		"Song").Preload("Song.Artist").Preload("Song.Album").Find(&plays)
 
 	p := indexPage{
-		Title:       "Luister",
-		TotalSongs:  cnt,
-		RecentSongs: songs,
-		RecentPlays: plays,
+		Title:        "Luister",
+		TotalSongs:   cnt,
+		TotalArtists: artistCnt,
+		RecentSongs:  songs,
+		RecentPlays:  plays,
 	}
 	t := getTemplate("index.html")
 	t.Execute(w, p)

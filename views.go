@@ -124,6 +124,43 @@ func (s Server) ArtistHandler(w http.ResponseWriter, r *http.Request) {
 	t.Execute(w, p)
 }
 
+type searchPage struct {
+	Title   string
+	Query   string
+	Artists []Artist
+	Albums  []Album
+	Songs   []Song
+}
+
+func (s Server) SearchHandler(w http.ResponseWriter, r *http.Request) {
+	query := r.FormValue("q")
+	// TODO: strip/normalize
+
+	if query == "" {
+		http.Redirect(w, r, "/", 302)
+		return
+	}
+
+	var artists []Artist
+	s.DB.Where("name ILIKE ?", "%"+query+"%").Order("upper(name) asc").Find(&artists)
+
+	var albums []Album
+	s.DB.Where("name ILIKE ?", "%"+query+"%").Order("upper(name) asc").Preload("Artist").Preload("Year").Find(&albums)
+
+	var songs []Song
+	s.DB.Where("title ILIKE ?", "%"+query+"%").Order("upper(title) asc").Preload("Artist").Preload("Album").Find(&songs)
+
+	p := searchPage{
+		Title:   "search results for '" + query + "'",
+		Query:   query,
+		Artists: artists,
+		Albums:  albums,
+		Songs:   songs,
+	}
+	t := getTemplate("search.html")
+	t.Execute(w, p)
+}
+
 func getTemplate(filename string) *template.Template {
 	var t = template.New("base.html")
 	return template.Must(t.ParseFiles(

@@ -1,0 +1,83 @@
+{{define "title"}}{{.Title}}{{end}}
+
+{{define "content"}}
+
+<table class="table">
+    <tr>
+        <th>Query</th>
+        <td>{{.Query}}</td>
+    </tr>
+
+    <tr>
+        <th>Artists</th>
+        <td>
+
+            <table class="table table-striped table-condensed" id="artists">
+                {{range $index, $artist := .Artists}}
+                <tr id="artist-{{$artist.ID}}">
+                    <td>
+                        <a href="{{$artist.URL}}">{{$artist.Name}}</a>
+                    </td>
+                </tr>
+                {{end}}
+            </table>
+        </td>
+    </tr>
+
+    <tr>
+        <th>Albums</th>
+        <td>
+
+            <table class="table table-striped table-condensed" id="albums">
+                {{range $index, $album := .Albums}}
+                <tr id="album-{{$album.ID}}">
+                    <td>
+                        <a href="{{$album.URL}}">{{$album.Name}}</a>
+                    </td>
+                    <td>
+                        <a href="{{$album.Artist.URL}}">{{$album.Artist.Name}}</a>
+                    </td>
+                    <td>
+                        {{$album.Year.Year}}
+                    </td>
+                </tr>
+                {{end}}
+            </table>
+        </td>
+    </tr>
+
+    <tr>
+        <th>Songs</th>
+        <td>
+
+            <table class="table table-striped table-condensed" id="songs">
+                <thead>
+                    <tr>
+                        <th>Song</th>
+                        <th>Artist</th>
+                        <th>Album</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{range $index, $song := .Songs}}
+                    <tr id="song-{{$song.ID}}">
+                        <td>
+                            <a href="{{$song.URL}}">{{$song.Title}}</a>
+                        </td>
+                        <td>
+                            <a href="{{$song.Artist.URL}}">{{$song.Artist.Name}}</a>
+                        </td>
+                        <td>
+                            <a href="{{$song.Album.URL}}">{{$song.Album.Name}}</a>
+                        </td>
+                    </tr>
+                    {{end}}
+                </tbody>                
+            </table>
+
+        </td>
+    </tr>
+
+</table>
+
+{{end}}

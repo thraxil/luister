@@ -42,6 +42,7 @@ func main() {
 	r.HandleFunc("/p/{song}/", s.PlayHandler)
 	r.HandleFunc("/al/{album}/", s.AlbumHandler)
 	r.HandleFunc("/ar/{artist}/", s.ArtistHandler)
+	r.HandleFunc("/search/", s.SearchHandler)
 
 	log.Fatal(http.ListenAndServe(":8009", r))
 }

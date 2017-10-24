@@ -2,30 +2,47 @@
 
 {{define "content"}}
 
-<table class="table">
-    <tr>
-        <th>Artist</th>
-        <td>{{.Artist.DisplayName}}</td>
-    </tr>
+<ul class="nav nav-tabs" role="tablist">
+    <li class="active"><a href="#info" role="tab" data-toggle="tab">Info</a></li>
+    <li><a href="#edit" role="tab" data-toggle="tab">Edit</a></li>        
+</ul>
 
-    <tr>
-        <th>Albums</th>
-        <td>
+<div class="tab-content">
+    <div class="tab-pane active" id="info" role="tabpanel">
+        <table class="table">
+            <tr>
+                <th>Artist</th>
+                <td>{{.Artist.DisplayName}}</td>
+            </tr>
 
-            <table class="table table-striped table-condensed" id="albums">
-                {{range $index, $album := .Albums}}
-                <tr id="album-{{$album.ID}}">
-                    <td>
-                        <a href="{{$album.URL}}">{{$album.DisplayName}}</a>
-                    </td>
-                    <td>
-                        {{$album.Year.Year}}
-                    </td>
-                </tr>
-                {{end}}
-            </table>
-        </td>
-    </tr>
-</table>
+            <tr>
+                <th>Albums</th>
+                <td>
+
+                    <table class="table table-striped table-condensed" id="albums">
+                        {{range $index, $album := .Albums}}
+                        <tr id="album-{{$album.ID}}">
+                            <td>
+                                <a href="{{$album.URL}}">{{$album.DisplayName}}</a>
+                            </td>
+                            <td>
+                                {{$album.Year.Year}}
+                            </td>
+                        </tr>
+                        {{end}}
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="tab-pane" id="edit" role="tabpanel">
+        <h2>Edit</h2>
+
+        <form action="." method="post">
+            <input type="text" name="name" value="{{.Artist.Name}}" class="form-control"/>
+            <input type="submit" class="btn btn-primary" value="save"/>
+        </form>
+    </div>
+</div>
 
 {{end}}

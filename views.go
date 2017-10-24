@@ -137,6 +137,19 @@ func (s Server) ArtistHandler(w http.ResponseWriter, r *http.Request) {
 	t.Execute(w, p)
 }
 
+func (s Server) EditArtistHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	artistID := vars["artist"]
+
+	var artist Artist
+	s.DB.First(&artist, artistID)
+
+	newName := r.FormValue("name")
+	artist.Name = newName
+	s.DB.Save(&artist)
+	http.Redirect(w, r, artist.URL(), 302)
+}
+
 type artistsPage struct {
 	Title   string
 	Artists []Artist

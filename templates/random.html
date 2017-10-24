@@ -86,7 +86,8 @@
  loadTrack(index);
 
  var playTrack = function(idx) {
-     loadTrack(idx);
+     index = idx;
+     loadTrack(index);
      a.play();
  };
 
@@ -109,7 +110,7 @@
          "track": track.Track,
          "name": track.Title,
          "url": track.URL,
-         "playURL": "/p/" + track.ID + "/"
+         "playURL": track.PlayURL
      });
      cnt = tracks.length;
      var currentTrack = cnt;

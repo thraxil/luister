@@ -203,7 +203,8 @@ type randomSong struct {
 	Album     string
 	AlbumURL  string
 	URL       string
-	ID        uint
+	ID        string
+	PlayURL   string
 }
 
 func (s Server) SingleRandomHandler(w http.ResponseWriter, r *http.Request) {
@@ -222,7 +223,8 @@ func (s Server) SingleRandomHandler(w http.ResponseWriter, r *http.Request) {
 		Album:     song.Album.Name,
 		AlbumURL:  song.Album.URL(),
 		URL:       song.HakmesURL(),
-		ID:        song.ID,
+		ID:        fmt.Sprintf("%d", song.ID),
+		PlayURL:   song.PlayURL(),
 	}
 
 	b, _ := json.Marshal(p)

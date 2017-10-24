@@ -12,9 +12,9 @@ Total Artists: {{.TotalArtists}}
     <tbody>
         {{ range .RecentPlays }}
         <tr>
-            <td><a href="{{.Song.URL}}">{{.Song.Title}}</a></td>
-            <td><a href="{{.Song.Artist.URL}}">{{.Song.Artist.Name}}</a></td>
-            <td><a href="{{.Song.Album.URL}}">{{.Song.Album.Name}}</a></td>            
+            <td><a href="{{.Song.URL}}">{{.Song.DisplayTitle}}</a></td>
+            <td><a href="{{.Song.Artist.URL}}">{{.Song.Artist.DisplayName}}</a></td>
+            <td><a href="{{.Song.Album.URL}}">{{.Song.Album.DisplayName}}</a></td>            
         </tr>
 
         {{ end }}
@@ -29,9 +29,9 @@ Total Artists: {{.TotalArtists}}
     <tbody>
         {{ range .RecentSongs }}
         <tr>
-            <td><a href="{{.URL}}">{{.Title}}</a></td>
-            <td><a href="{{.Artist.URL}}">{{.Artist.Name}}</a></td>
-            <td><a href="{{.Album.URL}}">{{.Album.Name}}</a></td>
+            <td><a href="{{.URL}}">{{.DisplayTitle}}</a></td>
+            <td><a href="{{.Artist.URL}}">{{.Artist.DisplayName}}</a></td>
+            <td><a href="{{.Album.URL}}">{{.Album.DisplayName}}</a></td>
         </tr>
         {{ end }}
     </tbody>

@@ -19,6 +19,13 @@ func (a Artist) URL() string {
 	return fmt.Sprintf("/ar/%d/", a.ID)
 }
 
+func (a Artist) DisplayName() string {
+	if a.Name == "" {
+		return "[missing]"
+	}
+	return a.Name
+}
+
 type Album struct {
 	gorm.Model
 	Name     string
@@ -32,6 +39,13 @@ type Album struct {
 
 func (a Album) URL() string {
 	return fmt.Sprintf("/al/%d/", a.ID)
+}
+
+func (a Album) DisplayName() string {
+	if a.Name == "" {
+		return "[missing]"
+	}
+	return a.Name
 }
 
 type Year struct {
@@ -70,6 +84,13 @@ func (s Song) URL() string {
 
 func (s Song) PlayURL() string {
 	return fmt.Sprintf("/p/%d/", s.ID)
+}
+
+func (s Song) DisplayTitle() string {
+	if s.Title == "" {
+		return "[missing]"
+	}
+	return s.Title
 }
 
 type File struct {

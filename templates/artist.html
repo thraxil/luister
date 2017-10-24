@@ -5,7 +5,7 @@
 <table class="table">
     <tr>
         <th>Artist</th>
-        <td>{{.Artist.Name}}</td>
+        <td>{{.Artist.DisplayName}}</td>
     </tr>
 
     <tr>
@@ -16,7 +16,7 @@
                 {{range $index, $album := .Albums}}
                 <tr id="album-{{$album.ID}}">
                     <td>
-                        <a href="{{$album.URL}}">{{$album.Name}}</a>
+                        <a href="{{$album.URL}}">{{$album.DisplayName}}</a>
                     </td>
                     <td>
                         {{$album.Year.Year}}

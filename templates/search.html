@@ -16,7 +16,7 @@
                 {{range $index, $artist := .Artists}}
                 <tr id="artist-{{$artist.ID}}">
                     <td>
-                        <a href="{{$artist.URL}}">{{$artist.Name}}</a>
+                        <a href="{{$artist.URL}}">{{$artist.DisplayName}}</a>
                     </td>
                 </tr>
                 {{end}}
@@ -32,10 +32,10 @@
                 {{range $index, $album := .Albums}}
                 <tr id="album-{{$album.ID}}">
                     <td>
-                        <a href="{{$album.URL}}">{{$album.Name}}</a>
+                        <a href="{{$album.URL}}">{{$album.DisplayName}}</a>
                     </td>
                     <td>
-                        <a href="{{$album.Artist.URL}}">{{$album.Artist.Name}}</a>
+                        <a href="{{$album.Artist.URL}}">{{$album.Artist.DisplayName}}</a>
                     </td>
                     <td>
                         {{$album.Year.Year}}
@@ -62,13 +62,13 @@
                     {{range $index, $song := .Songs}}
                     <tr id="song-{{$song.ID}}">
                         <td>
-                            <a href="{{$song.URL}}">{{$song.Title}}</a>
+                            <a href="{{$song.URL}}">{{$song.DisplayTitle}}</a>
                         </td>
                         <td>
-                            <a href="{{$song.Artist.URL}}">{{$song.Artist.Name}}</a>
+                            <a href="{{$song.Artist.URL}}">{{$song.Artist.DisplayName}}</a>
                         </td>
                         <td>
-                            <a href="{{$song.Album.URL}}">{{$song.Album.Name}}</a>
+                            <a href="{{$song.Album.URL}}">{{$song.Album.DisplayName}}</a>
                         </td>
                     </tr>
                     {{end}}

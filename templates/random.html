@@ -22,10 +22,10 @@
                 <span class="glyphicon glyphicon-play"></span></a>
         </td>
         <td>
-            <a href="{{$song.URL}}">{{$song.Title}}</a>
+            <a href="{{$song.URL}}">{{$song.DisplayTitle}}</a>
         </td>
-        <td><a href="{{$song.Artist.URL}}">{{$song.Artist.Name}}</a></td>
-        <td><a href="{{$song.Album.URL}}">{{$song.Album.Name}}</a></td>            
+        <td><a href="{{$song.Artist.URL}}">{{$song.Artist.DisplayName}}</a></td>
+        <td><a href="{{$song.Album.URL}}">{{$song.Album.DisplayName}}</a></td>            
         
     </tr>
     {{end}}
@@ -41,7 +41,7 @@
  tracks.push({
      "id": "{{.ID}}",
      "track": {{.Track}},
-     "name": "{{.Title}}",
+     "name": "{{.DisplayTitle}}",
      "url": "{{.HakmesURL}}",
      "playURL": "{{.PlayURL}}"
  });

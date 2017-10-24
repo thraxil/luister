@@ -5,11 +5,11 @@
 <table class="table">
     <tr>
         <th>Album</th>
-        <td>{{.Album.Name}}</td>
+        <td>{{.Album.DisplayName}}</td>
     </tr>
     <tr>
         <th>Artist</th>
-        <td><a href="{{.Album.Artist.URL}}">{{.Album.Artist.Name}}</a></td>
+        <td><a href="{{.Album.Artist.URL}}">{{.Album.Artist.DisplayName}}</a></td>
     </tr>
     <tr>
         <th>Year</th>
@@ -33,7 +33,7 @@
                         {{$song.Track}}
                     </td>
                     <td>
-                        <a href="{{$song.URL}}">{{$song.Title}}</a>
+                        <a href="{{$song.URL}}">{{$song.DisplayTitle}}</a>
                     </td>
                 </tr>
                 {{end}}
@@ -50,7 +50,7 @@
  tracks.push({
      "id": "{{.ID}}",
      "track": {{.Track}},
-     "name": "{{.Title}}",
+     "name": "{{.DisplayTitle}}",
      "url": "{{.HakmesURL}}",
      "playURL": "{{.PlayURL}}"
  });

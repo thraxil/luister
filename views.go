@@ -215,12 +215,12 @@ func (s Server) SingleRandomHandler(w http.ResponseWriter, r *http.Request) {
 		"Artist").Preload("Album").Find(&song)
 
 	p := randomSong{
-		Title:     song.Title,
+		Title:     song.DisplayTitle(),
 		Track:     song.Track,
 		SongURL:   song.URL(),
-		Artist:    song.Artist.Name,
+		Artist:    song.Artist.DisplayName(),
 		ArtistURL: song.Artist.URL(),
-		Album:     song.Album.Name,
+		Album:     song.Album.DisplayName(),
 		AlbumURL:  song.Album.URL(),
 		URL:       song.HakmesURL(),
 		ID:        fmt.Sprintf("%d", song.ID),

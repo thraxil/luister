@@ -10,6 +10,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
+	"github.com/thraxil/paginate"
 )
 
 var templateDir = "templates"
@@ -134,6 +135,57 @@ func (s Server) ArtistHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	t := getTemplate("artist.html")
 	t.Execute(w, p)
+}
+
+type artistsPage struct {
+	Title   string
+	Artists []Artist
+	Page    paginate.Page
+}
+
+type paginatedArtists struct {
+	db *gorm.DB
+}
+
+func NewPaginatedArtists(db *gorm.DB) paginatedArtists {
+	return paginatedArtists{db: db}
+}
+
+func (p paginatedArtists) TotalItems() int {
+	var cnt int
+	p.db.Model(&Artist{}).Count(&cnt)
+	return cnt
+}
+
+func (p paginatedArtists) ItemRange(offset, count int) []interface{} {
+	var artists []Artist
+
+	p.db.Model(&Artist{}).Order("upper(name) asc").Offset(offset).Limit(count).Find(&artists)
+
+	out := make([]interface{}, len(artists))
+	for j, v := range artists {
+		out[j] = v
+	}
+	return out
+}
+
+func (s Server) ArtistsHandler(w http.ResponseWriter, r *http.Request) {
+	index := NewPaginatedArtists(s.DB)
+	var p = paginate.Paginator{ItemList: index, PerPage: 100}
+	page := p.GetPage(r)
+	iartists := page.Items()
+	artists := make([]Artist, len(iartists))
+	for i, v := range iartists {
+		artists[i] = v.(Artist)
+	}
+
+	ap := artistsPage{
+		Title:   "all artists",
+		Artists: artists,
+		Page:    page,
+	}
+	t := getTemplate("artists.html")
+	t.Execute(w, ap)
 }
 
 type searchPage struct {

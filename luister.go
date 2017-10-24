@@ -42,6 +42,7 @@ func main() {
 	r.HandleFunc("/p/{song}/", s.PlayHandler)
 	r.HandleFunc("/al/{album}/", s.AlbumHandler)
 	r.HandleFunc("/ar/{artist}/", s.ArtistHandler)
+	r.HandleFunc("/ar/", s.ArtistsHandler)
 	r.HandleFunc("/search/", s.SearchHandler)
 	r.HandleFunc("/random/", s.RandomHandler)
 

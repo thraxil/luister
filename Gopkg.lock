@@ -37,9 +37,15 @@
   packages = [".","hstore","oid"]
   revision = "b0d5024adb34b4122c6ee7eeb6ab511f7223222d"
 
+[[projects]]
+  branch = "master"
+  name = "github.com/thraxil/paginate"
+  packages = ["."]
+  revision = "425aee97c4255e4d42e32b2e12a2ad65d9ba8664"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "b6d599142116e6ac37ffbc220c45c765bfcaa4408d2a40e0eb35c8e40cc24a87"
+  inputs-digest = "3c544a451d681ade10f4fe2843e34227e9cffdb41ccd0a688401a0dbf2234762"
   solver-name = "gps-cdcl"
   solver-version = 1

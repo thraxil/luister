@@ -5,11 +5,11 @@
 <table class="table">
     <tr>
         <th>Artist</th>
-        <td><a href="{{.Song.Artist.URL}}">{{.Song.Artist.Name}}</a></td>
+        <td><a href="{{.Song.Artist.URL}}">{{.Song.Artist.DisplayName}}</a></td>
     </tr>
     <tr>
         <th>Album</th>
-        <td><a href="{{.Song.Album.URL}}">{{.Song.Album.Name}}</a></td>
+        <td><a href="{{.Song.Album.URL}}">{{.Song.Album.DisplayName}}</a></td>
     </tr>
     <tr>
         <th>Year</th>
@@ -17,7 +17,7 @@
     </tr>
     <tr>
         <th>Title</th>
-        <td>{{.Song.Track}}: {{.Song.Title}}</td>
+        <td>{{.Song.Track}}: {{.Song.DisplayTitle}}</td>
     </tr>
 </table>
 
@@ -28,11 +28,17 @@
 <script>
  var endpoint = "{{.Song.PlayURL}}";
  var a = document.getElementsByTagName("audio")[0];
+ var inPause = false;
  a.addEventListener("play", function() {
-     console.log("played!");
-     var xhttp = new XMLHttpRequest();
-     xhttp.open("GET", endpoint, true);
-     xhttp.send();
+     if (!inPause) {
+         var xhttp = new XMLHttpRequest();
+         xhttp.open("GET", endpoint, true);
+         xhttp.send();
+     }
+     inPause = false;
+ }, true);
+ a.addEventListener("pause", function () {
+     inPause = true;
  }, true);
 </script>
 

@@ -50,18 +50,28 @@
  var playing = false;
  var index = 0;
  var cnt = tracks.length;
- 
+
  var a = document.getElementsByTagName("audio")[0];
+
+ var inPause = false;
+ 
  a.addEventListener("play", function() {
      playing = true;
-     var xhttp = new XMLHttpRequest();
-     xhttp.open("GET", tracks[index].playURL, true);
-     xhttp.send();
+     if (!inPause) {
+         // when we restart playing after a pause,
+         // we don't want to track it
+         var xhttp = new XMLHttpRequest();
+         xhttp.open("GET", tracks[index].playURL, true);
+         xhttp.send();
+     }
+     inPause = false;
  }, true);
  a.addEventListener("pause", function() {
      playing = false;
+     inPause = true;
  })
  a.addEventListener("ended", function() {
+     inPause = false;
      if ((index + 1) < cnt) {
          index++;
          loadTrack(index);
@@ -86,6 +96,7 @@
  loadTrack(index);
 
  var playTrack = function(idx) {
+     inPause = false;
      index = idx;
      loadTrack(index);
      a.play();

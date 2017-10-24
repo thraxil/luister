@@ -61,16 +61,24 @@
  var cnt = tracks.length;
  
  var a = document.getElementsByTagName("audio")[0];
+
+ var inPause = false;
+ 
  a.addEventListener("play", function() {
      playing = true;
-     var xhttp = new XMLHttpRequest();
-     xhttp.open("GET", tracks[index].playURL, true);
-     xhttp.send();
+     if (!inPause) {
+         var xhttp = new XMLHttpRequest();
+         xhttp.open("GET", tracks[index].playURL, true);
+         xhttp.send();
+     }
+     inPause = false;
  }, true);
  a.addEventListener("pause", function() {
      playing = false;
+     inPause = true;
  })
  a.addEventListener("ended", function() {
+     inPause = false;
      if ((index + 1) < cnt) {
          index++;
          loadTrack(index);
@@ -94,6 +102,7 @@
  loadTrack(index);
 
  var playTrack = function(idx) {
+     inPause = false;
      loadTrack(idx);
      a.play();
  }

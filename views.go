@@ -3,10 +3,10 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"html/template"
 	"net/http"
 	"path/filepath"
 	"strconv"
-	"text/template"
 
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"

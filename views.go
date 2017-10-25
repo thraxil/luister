@@ -271,11 +271,9 @@ type randomPage struct {
 
 func (s Server) RandomHandler(w http.ResponseWriter, r *http.Request) {
 	n := 10
-	songs := make([]Song, n)
 
-	for i := 0; i < n; i++ {
-		s.DB.Model(&Song{}).Order("random()").Limit(1).Preload("Files").Preload("Artist").Preload("Album").Find(&songs[i])
-	}
+	var songs []Song
+	s.DB.Model(&Song{}).Order("random()").Limit(n).Preload("Files").Preload("Artist").Preload("Album").Find(&songs)
 
 	p := randomPage{
 		Title: "random playlist",

@@ -3,13 +3,17 @@ package main
 import (
 	"fmt"
 	"path/filepath"
+	"time"
 
 	"github.com/jinzhu/gorm"
 )
 
 type Artist struct {
-	gorm.Model
-	Name string `gorm:"unique_index"`
+	ID        uint `gorm:"primary_key"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt *time.Time
+	Name      string `gorm:"unique_index"`
 
 	Albums []Album
 	Songs  []Song
@@ -61,12 +65,15 @@ func (a Artist) UpdateName(db *gorm.DB, newName string) Artist {
 }
 
 type Album struct {
-	gorm.Model
-	Name     string
-	ArtistID uint `gorm:"index"`
-	YearID   int  `gorm:"index"`
-	Artist   Artist
-	Year     Year
+	ID        uint `gorm:"primary_key"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt *time.Time
+	Name      string
+	ArtistID  uint `gorm:"index"`
+	YearID    int  `gorm:"index"`
+	Artist    Artist
+	Year      Year
 
 	Songs []Song
 }
@@ -117,7 +124,11 @@ type Year struct {
 }
 
 type Song struct {
-	gorm.Model
+	ID        uint `gorm:"primary_key"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt *time.Time
+
 	Title    string
 	ArtistID uint `gorm:"index"`
 	AlbumID  uint `gorm:"index"`
@@ -160,7 +171,11 @@ func (s Song) UpdateTitle(db *gorm.DB, newTitle string) Song {
 }
 
 type File struct {
-	gorm.Model
+	ID        uint `gorm:"primary_key"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt *time.Time
+
 	SongID   uint   `gorm:"index"`
 	Filename string `gorm:"index"`
 	Format   string `gorm:"index"`
@@ -177,19 +192,31 @@ func (f File) HakmesURL() string {
 }
 
 type Play struct {
-	gorm.Model
+	ID        uint `gorm:"primary_key"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt *time.Time
+
 	SongID uint `gorm:"index"`
 	Song   Song
 }
 
 type Rating struct {
-	gorm.Model
+	ID        uint `gorm:"primary_key"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt *time.Time
+
 	Rating int
 	SongID uint `gorm:"index"`
 	Song   Song
 }
 
 type Tag struct {
-	gorm.Model
+	ID        uint `gorm:"primary_key"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt *time.Time
+
 	Name string `gorm:"unique_index"`
 }

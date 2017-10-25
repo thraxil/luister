@@ -78,6 +78,19 @@ func (s Server) SongHandler(w http.ResponseWriter, r *http.Request) {
 	t.Execute(w, p)
 }
 
+func (s Server) EditSongHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	songID := vars["song"]
+
+	var song Song
+	s.DB.First(&song, songID)
+
+	newName := r.FormValue("title")
+
+	song = song.UpdateTitle(s.DB, newName)
+	http.Redirect(w, r, song.URL(), 302)
+}
+
 func (s Server) PlayHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	songID, _ := strconv.Atoi(vars["song"])

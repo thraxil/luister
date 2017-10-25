@@ -153,6 +153,12 @@ func (s Song) DisplayTitle() string {
 	return s.Title
 }
 
+func (s Song) UpdateTitle(db *gorm.DB, newTitle string) Song {
+	s.Title = newTitle
+	db.Save(&s)
+	return s
+}
+
 type File struct {
 	gorm.Model
 	SongID   uint   `gorm:"index"`

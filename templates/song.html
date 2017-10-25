@@ -2,44 +2,61 @@
 
 {{define "content"}}
 
-<table class="table">
-    <tr>
-        <th>Artist</th>
-        <td><a href="{{.Song.Artist.URL}}">{{.Song.Artist.DisplayName}}</a></td>
-    </tr>
-    <tr>
-        <th>Album</th>
-        <td><a href="{{.Song.Album.URL}}">{{.Song.Album.DisplayName}}</a></td>
-    </tr>
-    <tr>
-        <th>Year</th>
-        <td>{{.Song.Year.Year}}</td>
-    </tr>
-    <tr>
-        <th>Title</th>
-        <td>{{.Song.Track}}: {{.Song.DisplayTitle}}</td>
-    </tr>
-</table>
+<ul class="nav nav-tabs" role="tablist">
+    <li class="active"><a href="#info" role="tab" data-toggle="tab">Info</a></li>
+    <li><a href="#edit" role="tab" data-toggle="tab">Edit</a></li>        
+</ul>
 
-<audio id="audio" preload="auto" controls="">
-    <source src="{{.File.HakmesURL}}">
-</audio>
+<div class="tab-content">
+    <div class="tab-pane active" id="info" role="tabpanel">
+        <table class="table">
+            <tr>
+                <th>Artist</th>
+                <td><a href="{{.Song.Artist.URL}}">{{.Song.Artist.DisplayName}}</a></td>
+            </tr>
+            <tr>
+                <th>Album</th>
+                <td><a href="{{.Song.Album.URL}}">{{.Song.Album.DisplayName}}</a></td>
+            </tr>
+            <tr>
+                <th>Year</th>
+                <td>{{.Song.Year.Year}}</td>
+            </tr>
+            <tr>
+                <th>Title</th>
+                <td>{{.Song.Track}}: {{.Song.DisplayTitle}}</td>
+            </tr>
+        </table>
 
-<script>
- var endpoint = "{{.Song.PlayURL}}";
- var a = document.getElementsByTagName("audio")[0];
- var inPause = false;
- a.addEventListener("play", function() {
-     if (!inPause) {
-         var xhttp = new XMLHttpRequest();
-         xhttp.open("GET", endpoint, true);
-         xhttp.send();
-     }
-     inPause = false;
- }, true);
- a.addEventListener("pause", function () {
-     inPause = true;
- }, true);
-</script>
+        <audio id="audio" preload="auto" controls="">
+            <source src="{{.File.HakmesURL}}">
+        </audio>
+
+        <script>
+         var endpoint = "{{.Song.PlayURL}}";
+         var a = document.getElementsByTagName("audio")[0];
+         var inPause = false;
+         a.addEventListener("play", function() {
+             if (!inPause) {
+                 var xhttp = new XMLHttpRequest();
+                 xhttp.open("GET", endpoint, true);
+                 xhttp.send();
+             }
+             inPause = false;
+         }, true);
+         a.addEventListener("pause", function () {
+             inPause = true;
+         }, true);
+        </script>
+    </div>
+    <div class="tab-pane" id="edit" role="tabpanel">
+        <h2>Edit</h2>
+
+        <form action="." method="post">
+            <input type="text" name="title" value="{{.Song.Title}}" class="form-control"/>
+            <input type="submit" class="btn btn-primary" value="save"/>
+        </form>
+    </div>
+</div>
 
 {{end}}

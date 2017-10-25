@@ -38,7 +38,8 @@ func main() {
 	s := Server{DB: db}
 	r := mux.NewRouter()
 	r.HandleFunc("/", s.IndexHandler)
-	r.HandleFunc("/s/{song}/", s.SongHandler)
+	r.HandleFunc("/s/{song}/", s.SongHandler).Methods("GET")
+	r.HandleFunc("/s/{song}/", s.EditSongHandler).Methods("POST")
 	r.HandleFunc("/p/{song}/", s.PlayHandler)
 	r.HandleFunc("/al/{album}/", s.AlbumHandler).Methods("GET")
 	r.HandleFunc("/al/{album}/", s.EditAlbumHandler).Methods("POST")

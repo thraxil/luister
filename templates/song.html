@@ -26,6 +26,24 @@
                 <th>Title</th>
                 <td>{{.Song.Track}}: {{.Song.DisplayTitle}}</td>
             </tr>
+
+            <tr>
+                <th>Filename</th>
+                <td>{{.File.Filename}}</td>
+            </tr>
+            <tr>
+                <th>Format</th>
+                <td>{{.File.Format}}</td>
+            </tr>
+            <tr>
+                <th>Filetype</th>
+                <td>{{.File.Filetype}}</td>
+            </tr>
+            <tr>
+                <th>Filesize</th>
+                <td>{{.File.Filesize}}</td>
+            </tr>
+
         </table>
 
         <audio id="audio" preload="auto" controls="">

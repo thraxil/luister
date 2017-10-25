@@ -12,8 +12,8 @@ type Artist struct {
 	ID        uint `gorm:"primary_key"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
-	DeletedAt *time.Time
-	Name      string `gorm:"unique_index"`
+
+	Name string `gorm:"unique_index"`
 
 	Albums []Album
 	Songs  []Song
@@ -68,12 +68,12 @@ type Album struct {
 	ID        uint `gorm:"primary_key"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
-	DeletedAt *time.Time
-	Name      string
-	ArtistID  uint `gorm:"index"`
-	YearID    int  `gorm:"index"`
-	Artist    Artist
-	Year      Year
+
+	Name     string
+	ArtistID uint `gorm:"index"`
+	YearID   int  `gorm:"index"`
+	Artist   Artist
+	Year     Year
 
 	Songs []Song
 }
@@ -127,7 +127,6 @@ type Song struct {
 	ID        uint `gorm:"primary_key"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
-	DeletedAt *time.Time
 
 	Title    string
 	ArtistID uint `gorm:"index"`
@@ -174,7 +173,6 @@ type File struct {
 	ID        uint `gorm:"primary_key"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
-	DeletedAt *time.Time
 
 	SongID   uint   `gorm:"index"`
 	Filename string `gorm:"index"`
@@ -195,7 +193,6 @@ type Play struct {
 	ID        uint `gorm:"primary_key"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
-	DeletedAt *time.Time
 
 	SongID uint `gorm:"index"`
 	Song   Song
@@ -205,7 +202,6 @@ type Rating struct {
 	ID        uint `gorm:"primary_key"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
-	DeletedAt *time.Time
 
 	Rating int
 	SongID uint `gorm:"index"`
@@ -216,7 +212,6 @@ type Tag struct {
 	ID        uint `gorm:"primary_key"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
-	DeletedAt *time.Time
 
 	Name string `gorm:"unique_index"`
 }

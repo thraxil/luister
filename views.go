@@ -98,7 +98,7 @@ func (s Server) AlbumHandler(w http.ResponseWriter, r *http.Request) {
 	albumID := vars["album"]
 
 	var album Album
-	s.DB.Preload("Artist").Preload("Year").First(&album, albumID)
+	s.DB.Preload("Artist").First(&album, albumID)
 
 	var songs []Song
 	s.DB.Model(&album).Order("track asc").Preload("Files").Related(&songs)
@@ -110,6 +110,19 @@ func (s Server) AlbumHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	t := getTemplate("album.html")
 	t.Execute(w, p)
+}
+
+func (s Server) EditAlbumHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	albumID := vars["album"]
+
+	var album Album
+	s.DB.Preload("Artist").First(&album, albumID)
+
+	newName := r.FormValue("name")
+
+	album = album.UpdateName(s.DB, newName)
+	http.Redirect(w, r, album.URL(), 302)
 }
 
 type artistPage struct {

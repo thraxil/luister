@@ -159,38 +159,7 @@ func (s Server) EditArtistHandler(w http.ResponseWriter, r *http.Request) {
 
 	newName := r.FormValue("name")
 
-	// if there's already one with that name, merge this one into it
-	var nartists []Artist
-	s.DB.Model(&Artist{}).Where("name = ?", newName).Find(&nartists)
-	if len(nartists) > 0 {
-		nartist := nartists[0]
-
-		// update albums
-		var albums []Album
-		s.DB.Model(&artist).Related(&albums)
-		for _, album := range albums {
-			album.Artist = nartist
-			s.DB.Save(&album)
-		}
-
-		// update songs
-		var songs []Song
-		s.DB.Model(&artist).Related(&songs)
-		for _, song := range songs {
-			song.Artist = nartist
-			s.DB.Save(&song)
-		}
-
-		// delete
-		s.DB.Delete(&artist)
-
-		artist = nartist
-	} else {
-		// otherwise, just do a simple edit and save
-		artist.Name = newName
-		s.DB.Save(&artist)
-	}
-
+	artist = artist.UpdateName(s.DB, newName)
 	http.Redirect(w, r, artist.URL(), 302)
 }
 

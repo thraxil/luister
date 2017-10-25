@@ -26,6 +26,40 @@ func (a Artist) DisplayName() string {
 	return a.Name
 }
 
+func (a Artist) UpdateName(db *gorm.DB, newName string) Artist {
+	// if there's already one with that name, merge this one into it
+	var nartists []Artist
+	db.Model(&Artist{}).Where("name = ?", newName).Find(&nartists)
+	if len(nartists) > 0 {
+		nartist := nartists[0]
+
+		// update albums
+		var albums []Album
+		db.Model(&a).Related(&albums)
+		for _, album := range albums {
+			album.Artist = nartist
+			db.Save(&album)
+		}
+
+		// update songs
+		var songs []Song
+		db.Model(&a).Related(&songs)
+		for _, song := range songs {
+			song.Artist = nartist
+			db.Save(&song)
+		}
+
+		// delete
+		db.Delete(&a)
+
+		return nartist
+	}
+	// otherwise, just do a simple edit and save
+	a.Name = newName
+	db.Save(&a)
+	return a
+}
+
 type Album struct {
 	gorm.Model
 	Name     string

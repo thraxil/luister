@@ -13,6 +13,7 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
+	"strings"
 
 	"github.com/dhowden/tag"
 	"github.com/gorilla/mux"
@@ -22,6 +23,7 @@ import (
 
 func main() {
 	var imp = flag.Bool("import", false, "import from csv")
+	var str = flag.Bool("strip", false, "strip nulls")
 	flag.Parse()
 
 	const addr = "postgresql://luister@localhost:26257/luister?sslmode=disable"
@@ -33,6 +35,11 @@ func main() {
 	migrate(db)
 	if *imp {
 		importcsv(db)
+		return
+	}
+	if *str {
+		stripnulls(db)
+		return
 	}
 
 	s := Server{DB: db}
@@ -65,6 +72,42 @@ func migrate(db *gorm.DB) {
 	db.AutoMigrate(&Tag{})
 
 	fmt.Println("migrated")
+}
+
+func stripnulls(db *gorm.DB) {
+	// song titles
+	var songs []Song
+	db.Find(&songs)
+	for idx, song := range songs {
+		trimmed := strings.Trim(song.Title, "\x00")
+		if trimmed != song.Title {
+			fmt.Printf("fixing song [%d]: %s (%X)\n", idx, song.Title, song.Title)
+			song.UpdateTitle(db, trimmed)
+
+		}
+	}
+	// albums
+	var albums []Album
+	db.Find(&albums)
+	for idx, album := range albums {
+		trimmed := strings.Trim(album.Name, "\x00")
+		if trimmed != album.Name {
+			fmt.Printf("fixing album [%d]: %s (%X)\n", idx, album.Name, album.Name)
+			album.UpdateName(db, trimmed)
+		}
+	}
+
+	// artists
+	var artists []Artist
+	db.Find(&artists)
+	for idx, artist := range artists {
+		trimmed := strings.Trim(artist.Name, "\x00")
+		if trimmed != artist.Name {
+			fmt.Printf("fixing artist [%d]: %s (%X)\n", idx, artist.Name, artist.Name)
+			artist.UpdateName(db, trimmed)
+		}
+	}
+
 }
 
 func importcsv(db *gorm.DB) {

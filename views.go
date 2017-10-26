@@ -39,7 +39,7 @@ func (s Server) IndexHandler(w http.ResponseWriter, r *http.Request) {
 		"Artist").Preload("Album").Find(&songs)
 
 	var plays []Play
-	s.DB.Limit(10).Order("created_at desc").Preload(
+	s.DB.Limit(50).Order("created_at desc").Preload(
 		"Song").Preload("Song.Artist").Preload("Song.Album").Find(&plays)
 
 	p := indexPage{

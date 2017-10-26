@@ -176,6 +176,23 @@ func (s Server) TagHandler(w http.ResponseWriter, r *http.Request) {
 	t.Execute(w, p)
 }
 
+type tagsPage struct {
+	Title string
+	Tags  []Tag
+}
+
+func (s Server) TagsHandler(w http.ResponseWriter, r *http.Request) {
+	var tags []Tag
+	s.DB.Order("upper(name) asc").Find(&tags)
+
+	p := tagsPage{
+		Title: "Tags",
+		Tags:  tags,
+	}
+	t := getTemplate("tags.html")
+	t.Execute(w, p)
+}
+
 type albumPage struct {
 	Title string
 	Album Album

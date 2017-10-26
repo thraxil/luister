@@ -56,6 +56,7 @@ func main() {
 	r.HandleFunc("/ar/{artist}/", s.ArtistHandler).Methods("GET")
 	r.HandleFunc("/ar/{artist}/", s.EditArtistHandler).Methods("POST")
 	r.HandleFunc("/t/{tag}/", s.TagHandler)
+	r.HandleFunc("/t/", s.TagsHandler)
 	r.HandleFunc("/ar/", s.ArtistsHandler)
 	r.HandleFunc("/search/", s.SearchHandler)
 	r.HandleFunc("/random/", s.RandomHandler)

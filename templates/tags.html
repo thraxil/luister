@@ -1,0 +1,11 @@
+{{define "title"}}{{.Title}}{{end}}
+
+{{define "content"}}
+
+<div class="list-group">
+    {{ range .Tags }}
+    <a href="{{.URL}}" class="list-group-item">{{.Name}}</a>
+    {{ end }}
+</div>
+
+{{end}}

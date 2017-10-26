@@ -33,7 +33,44 @@
                     </table>
                 </td>
             </tr>
+            <tr>
+            <th>Songs</th>
+            <td>
+
+                <table class="table table-striped table-condensed" id="songs">
+                    <thead>
+                        <tr>
+                            <th>Song</th>
+                            <th>Album</th>
+                            <th>Rating</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{range $index, $song := .Songs}}
+                        <tr id="song-{{$song.ID}}">
+                            <td>
+                                <a href="{{$song.URL}}">{{$song.DisplayTitle}}</a>
+                            </td>
+                            <td>
+                                <a href="{{$song.Album.URL}}">{{$song.Album.DisplayName}}</a>
+                            </td>
+                            <td>
+                                <nobr><span class="rating rating-{{$song.Rating}}" id="rating-{{$song.ID}}"></span></nobr>
+                            </td>
+                        </tr>
+                        {{end}}
+                    </tbody>                
+                </table>
+            </td>
+            </tr>
         </table>
+
+        <script>
+         {{range $index, $song := .Songs}}
+         ratings["{{$song.ID}}"] = {{$song.Rating}};{{ end}}
+        </script>
+
+        
     </div>
     <div class="tab-pane" id="edit" role="tabpanel">
         <h2>Edit</h2>
@@ -44,5 +81,6 @@
         </form>
     </div>
 </div>
+
 
 {{end}}

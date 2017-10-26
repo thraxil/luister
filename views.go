@@ -235,6 +235,7 @@ type artistPage struct {
 	Title  string
 	Artist Artist
 	Albums []Album
+	Songs  []Song
 }
 
 func (s Server) ArtistHandler(w http.ResponseWriter, r *http.Request) {
@@ -247,10 +248,14 @@ func (s Server) ArtistHandler(w http.ResponseWriter, r *http.Request) {
 	var albums []Album
 	s.DB.Model(&artist).Preload("Year").Order("upper(name) asc").Related(&albums)
 
+	var songs []Song
+	s.DB.Where("artist_id = ?", artistID).Order("rating desc, album_id asc, track asc").Preload("Album").Find(&songs)
+
 	p := artistPage{
 		Title:  artist.Name,
 		Artist: artist,
 		Albums: albums,
+		Songs:  songs,
 	}
 	t := getTemplate("artist.html")
 	t.Execute(w, p)

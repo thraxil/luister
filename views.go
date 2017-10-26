@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"path/filepath"
 	"strconv"
+	"strings"
 
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
@@ -69,7 +70,7 @@ func (s Server) SongHandler(w http.ResponseWriter, r *http.Request) {
 	songID := vars["song"]
 
 	var song Song
-	s.DB.Preload("Artist").Preload("Album").Preload("Year").First(&song, songID)
+	s.DB.Preload("Artist").Preload("Album").Preload("Year").Preload("Tags").First(&song, songID)
 
 	var file File
 	s.DB.Where("song_id = ?", songID).First(&file)
@@ -96,6 +97,30 @@ func (s Server) EditSongHandler(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, song.URL(), 302)
 }
 
+func (s Server) TagSongHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	songID := vars["song"]
+
+	var song Song
+	s.DB.First(&song, songID).Preload("Tags")
+
+	tags := strings.Split(r.FormValue("tags"), ",")
+
+	// delete existing
+	for _, t := range song.Tags {
+		s.DB.Model(&song).Association("Tags").Delete(&t)
+	}
+
+	for _, t := range tags {
+		t = strings.Trim(t, " \n\r\t,\"'!?")
+		var tag Tag
+		s.DB.FirstOrCreate(&tag, Tag{Name: t})
+		s.DB.Model(&song).Association("Tags").Append(tag)
+	}
+
+	http.Redirect(w, r, song.URL(), 302)
+}
+
 func (s Server) PlayHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	songID, _ := strconv.Atoi(vars["song"])
@@ -119,6 +144,36 @@ func (s Server) RatingHandler(w http.ResponseWriter, r *http.Request) {
 	song.Rating = submitted
 	s.DB.Save(&song)
 	fmt.Fprintf(w, "ok")
+}
+
+type tagPage struct {
+	Title string
+	Tag   Tag
+	Songs []Song
+}
+
+func (s Server) TagHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	tagName := vars["tag"]
+
+	var tag Tag
+	s.DB.Model(&Tag{}).Where("name = ?", tagName).First(&tag)
+
+	var songs []Song
+	s.DB.Table("songs").
+		Joins("JOIN song_tags on song_tags.tag_id=? AND song_tags.song_id=songs.id", tag.ID).
+		Preload("Artist").
+		Preload("Album").
+		Preload("Files").
+		Find(&songs)
+
+	p := tagPage{
+		Title: tag.Name,
+		Tag:   tag,
+		Songs: songs,
+	}
+	t := getTemplate("tag.html")
+	t.Execute(w, p)
 }
 
 type albumPage struct {

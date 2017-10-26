@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/jinzhu/gorm"
@@ -165,6 +166,14 @@ func (s Song) DisplayTitle() string {
 	return fmt.Sprintf("%.256s", s.Title)
 }
 
+func (s Song) TagsString() string {
+	var tags []string
+	for _, t := range s.Tags {
+		tags = append(tags, t.Name)
+	}
+	return strings.Join(tags, ", ")
+}
+
 func (s Song) UpdateTitle(db *gorm.DB, newTitle string) Song {
 	s.Title = newTitle
 	db.Save(&s)
@@ -210,4 +219,10 @@ type Tag struct {
 	UpdatedAt time.Time
 
 	Name string `gorm:"unique_index"`
+
+	Songs []Song `gorm:"many2many:song_tags"`
+}
+
+func (t Tag) URL() string {
+	return fmt.Sprintf("/t/%s/", t.Name)
 }

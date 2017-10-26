@@ -54,6 +54,17 @@
                 <th>Filesize</th>
                 <td>{{.File.HumanSize}}</td>
             </tr>
+            <tr>
+                <th>Tags</th>
+                <td>
+                    {{ range .Song.Tags }}
+                    <a href="{{.URL}}"><span class="label label-default">{{.Name}}</span></a>
+                    {{ end }}
+                    <form action="tag/" method="post">
+                        <input type="text" name="tags" class="form-control" value="{{.Song.TagsString}}"/>
+                    </form>
+                </td>
+            </tr>
 
         </table>
 

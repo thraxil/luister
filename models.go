@@ -137,11 +137,12 @@ type Song struct {
 	Plays []Play
 	Tags  []Tag `gorm:"many2many:song_tags"`
 
-	Artist  Artist
-	Album   Album
-	Year    Year
-	Files   []File
-	Ratings []Rating
+	Artist Artist
+	Album  Album
+	Year   Year
+	Files  []File
+
+	Rating int `gorm:"index;not null;default:0"`
 }
 
 func (s Song) HakmesURL() string {
@@ -170,13 +171,6 @@ func (s Song) UpdateTitle(db *gorm.DB, newTitle string) Song {
 	return s
 }
 
-func (s Song) Rating() int {
-	if len(s.Ratings) > 0 {
-		return s.Ratings[0].Rating
-	}
-	return 0
-}
-
 type File struct {
 	ID        uint `gorm:"primary_key"`
 	CreatedAt time.Time
@@ -202,16 +196,6 @@ type Play struct {
 	CreatedAt time.Time
 	UpdatedAt time.Time
 
-	SongID uint `gorm:"index"`
-	Song   Song
-}
-
-type Rating struct {
-	ID        uint `gorm:"primary_key"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
-
-	Rating int
 	SongID uint `gorm:"index"`
 	Song   Song
 }

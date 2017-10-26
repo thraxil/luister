@@ -70,7 +70,6 @@ func migrate(db *gorm.DB) {
 	db.AutoMigrate(&Song{})
 	db.AutoMigrate(&File{})
 	db.AutoMigrate(&Play{})
-	db.AutoMigrate(&Rating{})
 	db.AutoMigrate(&Tag{})
 
 	fmt.Println("migrated")

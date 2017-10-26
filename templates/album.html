@@ -57,7 +57,7 @@
         <h2>Edit</h2>
 
         <form action="." method="post">
-            <input type="text" name="name" value="{{.Album.Name}}" class="form-control"/>
+            <input type="text" name="name" value="{{printf "%.256s" .Album.Name}}" class="form-control"/>
             <input type="submit" class="btn btn-primary" value="save"/>
         </form>
     </div>

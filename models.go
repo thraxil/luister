@@ -27,7 +27,7 @@ func (a Artist) DisplayName() string {
 	if a.Name == "" {
 		return "[missing]"
 	}
-	return a.Name
+	return fmt.Sprintf("%.256s", a.Name)
 }
 
 func (a Artist) UpdateName(db *gorm.DB, newName string) Artist {
@@ -86,7 +86,7 @@ func (a Album) DisplayName() string {
 	if a.Name == "" {
 		return "[missing]"
 	}
-	return a.Name
+	return fmt.Sprintf("%.256s", a.Name)
 }
 
 func (a Album) UpdateName(db *gorm.DB, newName string) Album {
@@ -162,7 +162,7 @@ func (s Song) DisplayTitle() string {
 	if s.Title == "" {
 		return "[missing]"
 	}
-	return s.Title
+	return fmt.Sprintf("%.256s", s.Title)
 }
 
 func (s Song) UpdateTitle(db *gorm.DB, newTitle string) Song {

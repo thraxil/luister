@@ -22,6 +22,7 @@ type Server struct {
 type indexPage struct {
 	Title        string
 	TotalSongs   int
+	UnratedCnt   int
 	TotalArtists int
 	RecentSongs  []Song
 	RecentPlays  []Play
@@ -30,6 +31,9 @@ type indexPage struct {
 func (s Server) IndexHandler(w http.ResponseWriter, r *http.Request) {
 	var cnt int
 	s.DB.Model(&Song{}).Count(&cnt)
+
+	var unratedCnt int
+	s.DB.Model(&Song{}).Where("rating = 0").Count(&unratedCnt)
 
 	var artistCnt int
 	s.DB.Model(&Artist{}).Count(&artistCnt)
@@ -45,6 +49,7 @@ func (s Server) IndexHandler(w http.ResponseWriter, r *http.Request) {
 	p := indexPage{
 		Title:        "Luister",
 		TotalSongs:   cnt,
+		UnratedCnt:   unratedCnt,
 		TotalArtists: artistCnt,
 		RecentSongs:  songs,
 		RecentPlays:  plays,

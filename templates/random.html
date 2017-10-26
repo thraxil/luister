@@ -12,6 +12,7 @@
             <th>Song</th>
             <th>Artist</th>
             <th>Album</th>
+            <th>Rating</th>
         </tr>
     </thead>
     <tbody id="songs-tbody">
@@ -26,12 +27,18 @@
         </td>
         <td><a href="{{$song.Artist.URL}}">{{$song.Artist.DisplayName}}</a></td>
         <td><a href="{{$song.Album.URL}}">{{$song.Album.DisplayName}}</a></td>            
+        <td>
+            <nobr><span class="rating rating-{{$song.Rating}}" id="rating-{{$song.ID}}"></span></nobr>
+        </td>
         
     </tr>
     {{end}}
     </tbody>
 </table>
-
+<script>
+    {{ range .Songs }}
+    ratings["{{.ID}}"] = {{.Rating}};{{ end}}
+</script>
 <button onclick="newTrack()">+</button>
 
 <script>
@@ -43,6 +50,7 @@
      "track": {{.Track}},
      "name": "{{.DisplayTitle}}",
      "url": "{{.HakmesURL}}",
+     "rating": {{.Rating}},
      "playURL": "{{.PlayURL}}"
  });
  {{ end }}
@@ -123,6 +131,7 @@
          "url": track.URL,
          "playURL": track.PlayURL
      });
+     ratings[track.ID] = track.Rating;
      cnt = tracks.length;
      var currentTrack = cnt;
      // add row to the table
@@ -159,6 +168,14 @@
      albumA.setAttribute("href", track.AlbumURL);
      albumA.textContent = track.Album;
      albumTD.appendChild(albumA);
+
+     var ratingTD = document.createElement("td");
+     var ratingSpan = document.createElement("span");
+     ratingSpan.setAttribute("id", "rating-" + track.ID);
+     ratingSpan.classList.add("rating");
+     ratingSpan.classList.add("rating-" + track.Rating);
+     $(ratingSpan).append(ratingsWidget(track.Rating, track.ID));
+     ratingTD.appendChild(ratingSpan);
      
      var tr = document.createElement('tr');
      tr.setAttribute("id", "song-" + track.ID);
@@ -167,6 +184,7 @@
      tr.appendChild(titleTD);
      tr.appendChild(artistTD);
      tr.appendChild(albumTD);
+     tr.appendChild(ratingTD);
 
      tbody.append(tr);
 

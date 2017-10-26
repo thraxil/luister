@@ -4,6 +4,24 @@
         <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" />
         <script src="//code.jquery.com/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+        <style type="text/css">
+         .rating-0 { color: #ccc; }
+         .rating-1 { color: #999; }
+         .rating-2 { color: #666; }
+         .rating-3 { color: #333; }
+         .rating-4 { color: #c76; }
+         .rating-5 { color: #f60; }
+         .rating-0 .glyphicon-star-empty { color: #ccc; }
+         .rating-1 .glyphicon-star-empty { color: #ccc; }
+         .rating-2 .glyphicon-star-empty { color: #ccc; }
+         .rating-3 .glyphicon-star-empty { color: #ccc; }
+         .rating-4 .glyphicon-star-empty { color: #ccc; }
+         .rating-5 .glyphicon-star-empty { color: #ccc; }         
+        </style>
+        <script>
+var ratings = {};
+        </script>
     </head>
     <body>
         <div class="container">
@@ -29,5 +47,46 @@
             
             {{template "content" .}}
         </div>
+
+        <script>
+         var ratingsWidget = function(rating, id) {
+             var stars = [];
+             for (var i=0; i<5; i++) {
+                 var setRating = function(localrating) {
+                     return function() {
+                         var url = "/r/" + id + "/";
+                         ratings[id] = localrating;
+                         $('#rating-' + id).empty();
+                         $('#rating-' + id).append(ratingsWidget(localrating, id));
+                         $('#rating-' + id)
+                             .removeClass('rating-0')
+                             .removeClass('rating-1')
+                             .removeClass('rating-2')
+                             .removeClass('rating-3')
+                             .removeClass('rating-4')
+                             .removeClass('rating-5');
+                         $('#rating-' + id).addClass('rating-' + localrating);
+                         $.post(url, {rating: localrating});
+                     }
+                 }
+                 var s = $('<span class="glyphicon glyphicon-star-empty"></span>');
+                 if (i < rating) {
+                     s = $('<span class="glyphicon glyphicon-star"></span>');
+                 }
+                 s.click(setRating(i + 1));
+                 stars.push(s);
+             }
+             return stars;
+         }
+         
+         var populateRatings = function() {
+             $('.rating').each(function (index, value) {
+                 var id = value.id.split("-")[1];
+                 var rating = ratings.hasOwnProperty(id) ? ratings[id] : 0;
+                 $(value).append(ratingsWidget(rating, id));
+             });
+         };
+         $(document).ready(populateRatings());
+        </script>
     </body>
 </html>

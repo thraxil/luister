@@ -137,10 +137,11 @@ type Song struct {
 	Plays []Play
 	Tags  []Tag `gorm:"many2many:song_tags"`
 
-	Artist Artist
-	Album  Album
-	Year   Year
-	Files  []File
+	Artist  Artist
+	Album   Album
+	Year    Year
+	Files   []File
+	Ratings []Rating
 }
 
 func (s Song) HakmesURL() string {
@@ -167,6 +168,13 @@ func (s Song) UpdateTitle(db *gorm.DB, newTitle string) Song {
 	s.Title = newTitle
 	db.Save(&s)
 	return s
+}
+
+func (s Song) Rating() int {
+	if len(s.Ratings) > 0 {
+		return s.Ratings[0].Rating
+	}
+	return 0
 }
 
 type File struct {

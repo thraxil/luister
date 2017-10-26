@@ -33,6 +33,7 @@ func main() {
 	}
 	defer db.Close()
 	migrate(db)
+	db.LogMode(true)
 	if *imp {
 		importcsv(db)
 		return
@@ -48,6 +49,7 @@ func main() {
 	r.HandleFunc("/s/{song}/", s.SongHandler).Methods("GET")
 	r.HandleFunc("/s/{song}/", s.EditSongHandler).Methods("POST")
 	r.HandleFunc("/p/{song}/", s.PlayHandler)
+	r.HandleFunc("/r/{song}/", s.RatingHandler).Methods("POST")
 	r.HandleFunc("/al/{album}/", s.AlbumHandler).Methods("GET")
 	r.HandleFunc("/al/{album}/", s.EditAlbumHandler).Methods("POST")
 	r.HandleFunc("/ar/{artist}/", s.ArtistHandler).Methods("GET")

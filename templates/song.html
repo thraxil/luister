@@ -28,6 +28,17 @@
             </tr>
 
             <tr>
+                <th>Rating</th>
+                <td>
+                    <nobr><span class="rating rating-{{.Song.Rating}}" id="rating-{{.Song.ID}}"></span></nobr>
+                </td>
+                <script>
+                    ratings["{{.Song.ID}}"] = {{.Song.Rating}};
+                </script>
+            </tr>
+
+            
+            <tr>
                 <th>Filename</th>
                 <td>{{.File.Filename}}</td>
             </tr>

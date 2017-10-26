@@ -42,6 +42,10 @@
                             <td>
                                 <a href="{{$song.URL}}">{{$song.DisplayTitle}}</a>
                             </td>
+                            <td>
+                                <nobr><span class="rating rating-{{$song.Rating}}" id="rating-{{$song.ID}}"></span></nobr>
+                            </td>
+                            
                         </tr>
                         {{end}}
                     </table>
@@ -60,70 +64,73 @@
 </div>
 
 
-        <script>
+<script>
 
-         var tracks = [];
-         {{ range .Songs}}
-         tracks.push({
-             "id": "{{.ID}}",
-             "track": {{.Track}},
-             "name": "{{.DisplayTitle}}",
-             "url": "{{.HakmesURL}}",
-             "playURL": "{{.PlayURL}}"
-         });
-         {{ end }}
+ var tracks = [];
+ {{ range .Songs}}
+ tracks.push({
+     "id": "{{.ID}}",
+     "track": {{.Track}},
+     "name": "{{.DisplayTitle}}",
+     "url": "{{.HakmesURL}}",
+     "playURL": "{{.PlayURL}}"
+ });
 
-         var playing = false;
-         var index = 0;
-         var cnt = tracks.length;
-         
-         var a = document.getElementsByTagName("audio")[0];
+ ratings["{{.ID}}"] = {{.Rating}};
+ 
+ {{ end }}
 
-         var inPause = false;
-         
-         a.addEventListener("play", function() {
-             playing = true;
-             if (!inPause) {
-                 var xhttp = new XMLHttpRequest();
-                 xhttp.open("GET", tracks[index].playURL, true);
-                 xhttp.send();
-             }
-             inPause = false;
-         }, true);
-         a.addEventListener("pause", function() {
-             playing = false;
-             inPause = true;
-         })
-         a.addEventListener("ended", function() {
-             inPause = false;
-             if ((index + 1) < cnt) {
-                 index++;
-                 loadTrack(index);
-                 a.play();
-             } else {
-                 audio.pause();
-                 index = 0;
-                 loadTrack(index);
-             }
-         });
-         var loadTrack = function(idx) {
-             audio.src = tracks[idx].url;
-             var rows = document.getElementsByTagName("tr");
-             for (var i=0; i<rows.length; i++) {
-                 rows[i].classList.remove("info");
-             }
-             
-             var row = document.getElementById("song-" + tracks[idx].id);
-             row.classList.add("info");
-         }
+ var playing = false;
+ var index = 0;
+ var cnt = tracks.length;
+ 
+ var a = document.getElementsByTagName("audio")[0];
+
+ var inPause = false;
+ 
+ a.addEventListener("play", function() {
+     playing = true;
+     if (!inPause) {
+         var xhttp = new XMLHttpRequest();
+         xhttp.open("GET", tracks[index].playURL, true);
+         xhttp.send();
+     }
+     inPause = false;
+ }, true);
+ a.addEventListener("pause", function() {
+     playing = false;
+     inPause = true;
+ })
+ a.addEventListener("ended", function() {
+     inPause = false;
+     if ((index + 1) < cnt) {
+         index++;
          loadTrack(index);
+         a.play();
+     } else {
+         audio.pause();
+         index = 0;
+         loadTrack(index);
+     }
+ });
+ var loadTrack = function(idx) {
+     audio.src = tracks[idx].url;
+     var rows = document.getElementsByTagName("tr");
+     for (var i=0; i<rows.length; i++) {
+         rows[i].classList.remove("info");
+     }
+     
+     var row = document.getElementById("song-" + tracks[idx].id);
+     row.classList.add("info");
+ }
+ loadTrack(index);
 
-         var playTrack = function(idx) {
-             inPause = false;
-             loadTrack(idx);
-             a.play();
-         }
-        </script>
+ var playTrack = function(idx) {
+     inPause = false;
+     loadTrack(idx);
+     a.play();
+ }
+</script>
 
 
 

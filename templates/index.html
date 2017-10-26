@@ -7,16 +7,23 @@ Total Artists: {{.TotalArtists}}
 <h2>Recently Played</h2>
 <table class="table table-striped table-condensed">
     <thead>
-        <tr><th>Song</th><th>Artist</th><th>Album</th></tr>
+        <tr>
+            <th>Song</th>
+            <th>Artist</th>
+            <th>Album</th>
+            <th>Rating</th>
+        </tr>
     </thead>
     <tbody>
         {{ range .RecentPlays }}
         <tr>
             <td><a href="{{.Song.URL}}">{{.Song.DisplayTitle}}</a></td>
             <td><a href="{{.Song.Artist.URL}}">{{.Song.Artist.DisplayName}}</a></td>
-            <td><a href="{{.Song.Album.URL}}">{{.Song.Album.DisplayName}}</a></td>            
+            <td><a href="{{.Song.Album.URL}}">{{.Song.Album.DisplayName}}</a></td>
+            <td>
+                <nobr><span class="rating rating-{{.Song.Rating}}" id="rating-{{.Song.ID}}"></span></nobr>
+            </td>
         </tr>
-
         {{ end }}
     </tbody>
 </table>
@@ -24,7 +31,7 @@ Total Artists: {{.TotalArtists}}
 <h2>Recently Added</h2>
 <table class="table table-striped table-condensed">
     <thead>
-        <tr><th>Song</th><th>Artist</th><th>Album</th></tr>
+        <tr><th>Song</th><th>Artist</th><th>Album</th><th>Rating</th></tr>
     </thead>
     <tbody>
         {{ range .RecentSongs }}
@@ -32,9 +39,19 @@ Total Artists: {{.TotalArtists}}
             <td><a href="{{.URL}}">{{.DisplayTitle}}</a></td>
             <td><a href="{{.Artist.URL}}">{{.Artist.DisplayName}}</a></td>
             <td><a href="{{.Album.URL}}">{{.Album.DisplayName}}</a></td>
+            <td>
+                <nobr><span class="rating rating-{{.Rating}}" id="rating-{{.ID}}"></span></nobr>
+            </td>
         </tr>
         {{ end }}
     </tbody>
 </table>
+<script>
+ {{ range .RecentPlays}}
+ ratings["{{.Song.ID}}"] = {{.Song.Rating}};{{ end}}
+ {{ range .RecentSongs}}
+ ratings["{{.ID}}"] = {{.Rating}};{{ end}}
+</script>
+
 
 {{end}}

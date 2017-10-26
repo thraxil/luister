@@ -36,11 +36,11 @@ func (s Server) IndexHandler(w http.ResponseWriter, r *http.Request) {
 
 	var songs []Song
 	s.DB.Limit(10).Order("created_at desc").Preload(
-		"Artist").Preload("Album").Find(&songs)
+		"Artist").Preload("Album").Preload("Ratings").Find(&songs)
 
 	var plays []Play
 	s.DB.Limit(10).Order("created_at desc").Preload(
-		"Song").Preload("Song.Artist").Preload("Song.Album").Find(&plays)
+		"Song").Preload("Song.Artist").Preload("Song.Album").Preload("Song.Ratings").Find(&plays)
 
 	p := indexPage{
 		Title:        "Luister",
@@ -64,7 +64,7 @@ func (s Server) SongHandler(w http.ResponseWriter, r *http.Request) {
 	songID := vars["song"]
 
 	var song Song
-	s.DB.Preload("Artist").Preload("Album").Preload("Year").First(&song, songID)
+	s.DB.Preload("Artist").Preload("Album").Preload("Year").Preload("Ratings").First(&song, songID)
 
 	var file File
 	s.DB.Where("song_id = ?", songID).First(&file)
@@ -100,6 +100,22 @@ func (s Server) PlayHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "ok")
 }
 
+func (s Server) RatingHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	songID, _ := strconv.Atoi(vars["song"])
+
+	var rating Rating
+	s.DB.FirstOrCreate(&rating, Rating{SongID: uint(songID)})
+	submitted, err := strconv.Atoi(r.FormValue("rating"))
+	if err != nil {
+		fmt.Println(r.FormValue("rating"))
+		return
+	}
+	rating.Rating = submitted
+	s.DB.Save(&rating)
+	fmt.Fprintf(w, "ok")
+}
+
 type albumPage struct {
 	Title string
 	Album Album
@@ -114,7 +130,7 @@ func (s Server) AlbumHandler(w http.ResponseWriter, r *http.Request) {
 	s.DB.Preload("Artist").First(&album, albumID)
 
 	var songs []Song
-	s.DB.Model(&album).Order("track asc").Preload("Files").Related(&songs)
+	s.DB.Model(&album).Order("track asc").Preload("Files").Preload("Ratings").Related(&songs)
 
 	p := albumPage{
 		Title: album.Name,
@@ -251,7 +267,7 @@ func (s Server) SearchHandler(w http.ResponseWriter, r *http.Request) {
 	s.DB.Where("name ILIKE ?", "%"+query+"%").Order("upper(name) asc").Preload("Artist").Preload("Year").Find(&albums)
 
 	var songs []Song
-	s.DB.Where("title ILIKE ?", "%"+query+"%").Order("upper(title) asc").Preload("Artist").Preload("Album").Find(&songs)
+	s.DB.Where("title ILIKE ?", "%"+query+"%").Order("upper(title) asc").Preload("Artist").Preload("Album").Preload("Ratings").Find(&songs)
 
 	p := searchPage{
 		Title:   "search results for '" + query + "'",
@@ -273,7 +289,7 @@ func (s Server) RandomHandler(w http.ResponseWriter, r *http.Request) {
 	n := 10
 
 	var songs []Song
-	s.DB.Model(&Song{}).Order("random()").Limit(n).Preload("Files").Preload("Artist").Preload("Album").Find(&songs)
+	s.DB.Model(&Song{}).Order("random()").Limit(n).Preload("Files").Preload("Artist").Preload("Album").Preload("Ratings").Find(&songs)
 
 	p := randomPage{
 		Title: "random playlist",
@@ -294,6 +310,7 @@ type randomSong struct {
 	URL       string
 	ID        string
 	PlayURL   string
+	Rating    int
 }
 
 func (s Server) SingleRandomHandler(w http.ResponseWriter, r *http.Request) {
@@ -301,7 +318,7 @@ func (s Server) SingleRandomHandler(w http.ResponseWriter, r *http.Request) {
 
 	s.DB.Model(&Song{}).Order("random()").Limit(1).Preload(
 		"Files").Preload(
-		"Artist").Preload("Album").Find(&song)
+		"Artist").Preload("Album").Preload("Ratings").Find(&song)
 
 	p := randomSong{
 		Title:     song.DisplayTitle(),
@@ -314,6 +331,7 @@ func (s Server) SingleRandomHandler(w http.ResponseWriter, r *http.Request) {
 		URL:       song.HakmesURL(),
 		ID:        fmt.Sprintf("%d", song.ID),
 		PlayURL:   song.PlayURL(),
+		Rating:    song.Rating(),
 	}
 
 	b, _ := json.Marshal(p)

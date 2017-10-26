@@ -286,7 +286,7 @@ type randomPage struct {
 }
 
 func (s Server) RandomHandler(w http.ResponseWriter, r *http.Request) {
-	n := 10
+	n := 50
 
 	var songs []Song
 	s.DB.Model(&Song{}).Order("random()").Limit(n).Preload("Files").Preload("Artist").Preload("Album").Find(&songs)

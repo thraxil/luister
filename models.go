@@ -191,6 +191,10 @@ func (f File) HakmesURL() string {
 	return "http://localhost:9300/file/" + f.Hash + "/file" + ext
 }
 
+func (f File) HumanSize() string {
+	return fmt.Sprintf("%.02f MB", float64(f.Filesize)/(1024*1024))
+}
+
 type Play struct {
 	ID        uint `gorm:"primary_key"`
 	CreatedAt time.Time

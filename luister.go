@@ -46,6 +46,7 @@ func main() {
 	s := Server{DB: db}
 	r := mux.NewRouter()
 	r.HandleFunc("/", s.IndexHandler)
+	r.HandleFunc("/vue/", s.VueHandler)
 	r.HandleFunc("/s/{song}/", s.SongHandler).Methods("GET")
 	r.HandleFunc("/s/{song}/", s.EditSongHandler).Methods("POST")
 	r.HandleFunc("/s/{song}/tag/", s.TagSongHandler).Methods("POST")

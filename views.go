@@ -59,6 +59,18 @@ func (s Server) IndexHandler(w http.ResponseWriter, r *http.Request) {
 	t.Execute(w, p)
 }
 
+type vuePage struct {
+	Title string
+}
+
+func (s Server) VueHandler(w http.ResponseWriter, r *http.Request) {
+	p := vuePage{
+		Title: "Luister",
+	}
+	t := getTemplate("vue.html")
+	t.Execute(w, p)
+}
+
 type songPage struct {
 	Title string
 	Song  Song

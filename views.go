@@ -281,20 +281,24 @@ type artistsPage struct {
 }
 
 type paginatedArtists struct {
-	db *gorm.DB
+	db  *gorm.DB
+	cnt int
 }
 
-func NewPaginatedArtists(db *gorm.DB) paginatedArtists {
-	return paginatedArtists{db: db}
+func NewPaginatedArtists(db *gorm.DB) *paginatedArtists {
+	return &paginatedArtists{db: db, cnt: -1}
 }
 
-func (p paginatedArtists) TotalItems() int {
-	var cnt int
-	p.db.Model(&Artist{}).Count(&cnt)
-	return cnt
+func (p *paginatedArtists) TotalItems() int {
+	if p.cnt == -1 {
+		var cnt int
+		p.db.Model(&Artist{}).Count(&cnt)
+		p.cnt = cnt
+	}
+	return p.cnt
 }
 
-func (p paginatedArtists) ItemRange(offset, count int) []interface{} {
+func (p *paginatedArtists) ItemRange(offset, count int) []interface{} {
 	var artists []Artist
 
 	p.db.Model(&Artist{}).Order("upper(name) asc").Offset(offset).Limit(count).Find(&artists)

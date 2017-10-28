@@ -19,8 +19,13 @@
                     <td>
                         <song-link v-bind:id="play.Song.ID" v-bind:title="play.Song.Title"></song-link>
                     </td>
-                    <td><a v-bind:href="'/ar/' + play.Song.Artist.ID + '/'">{{play.Song.Artist.Name}}</a></td>
-                    <td><a v-bind:href="'/al/' + play.Song.Album.ID + '/'">{{play.Song.Album.Name}}</a></td>
+                    <td>
+                        <artist-link v-bind:id="play.Song.Artist.ID"
+                                     v-bind:name="play.Song.Artist.Name"></artist-link>
+                    </td>
+                    <td>
+                        <a v-bind:href="'/al/' + play.Song.Album.ID + '/'">{{play.Song.Album.Name}}</a>
+                    </td>
                     <td>
                         <rating v-bind:id="play.Song.ID" v-bind:initial-rating="play.Song.Rating"></rating>
                     </td>
@@ -38,6 +43,7 @@
  import axios from 'axios' 
  import Rating from '@/components/Rating'
  import SongLink from '@/components/SongLink'
+ import ArtistLink from '@/components/ArtistLink' 
  
  export default {
      name: 'Index',
@@ -48,7 +54,8 @@
      },
      components: {
          'rating': Rating,
-         'song-link': SongLink
+         'song-link': SongLink,
+         'artist-link': ArtistLink
      },
      methods: {
          getData() {

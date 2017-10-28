@@ -14,7 +14,8 @@
                             <song-link v-bind:id="song.ID" v-bind:title="song.Title"></song-link>
                         </td>
                         <td>
-                            <a v-bind:href="'/ar/' + song.Artist.ID + '/'">{{song.Artist.Name}}</a>
+                            <artist-link v-bind:id="song.Artist.ID"
+                                         v-bind:name="song.Artist.Name"></artist-link>
                         </td>
                         <td>
                             <a v-bind:href="'/al/' + song.Album.ID + '/'">{{song.Album.Name}}</a>
@@ -34,6 +35,7 @@
  import axios from 'axios'
  import Rating from '@/components/Rating'
  import SongLink from '@/components/SongLink'
+ import ArtistLink from '@/components/ArtistLink' 
 
 
  export default {
@@ -48,7 +50,8 @@
      },
      components: {
          'rating': Rating,
-         'song-link': SongLink
+         'song-link': SongLink,
+         'artist-link': ArtistLink
      },
      methods: {
          getData() {

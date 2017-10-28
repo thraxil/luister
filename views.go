@@ -59,16 +59,21 @@ func (s Server) IndexHandler(w http.ResponseWriter, r *http.Request) {
 	t.Execute(w, p)
 }
 
-type vuePage struct {
-	Title string
+func (s Server) RecentlyPlayedAPIHandler(w http.ResponseWriter, r *http.Request) {
+	var plays []Play
+	s.DB.Limit(25).Order("created_at desc").Preload(
+		"Song").Preload("Song.Artist").Preload("Song.Album").Find(&plays)
+
+	p := struct{ Plays []Play }{
+		Plays: plays,
+	}
+	b, _ := json.Marshal(p)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(b)
 }
 
 func (s Server) VueHandler(w http.ResponseWriter, r *http.Request) {
-	p := vuePage{
-		Title: "Luister",
-	}
-	t := getTemplate("vue.html")
-	t.Execute(w, p)
+	http.ServeFile(w, r, "./frontend/dist/index.html")
 }
 
 type songPage struct {
@@ -148,9 +153,9 @@ func (s Server) RatingHandler(w http.ResponseWriter, r *http.Request) {
 
 	var song Song
 	s.DB.First(&song, uint(songID))
+
 	submitted, err := strconv.Atoi(r.FormValue("rating"))
 	if err != nil {
-		fmt.Println(r.FormValue("rating"))
 		return
 	}
 	song.Rating = submitted
@@ -188,6 +193,33 @@ func (s Server) TagHandler(w http.ResponseWriter, r *http.Request) {
 	t.Execute(w, p)
 }
 
+func (s Server) TagAPIHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	tagName := vars["tag"]
+
+	var tag Tag
+	s.DB.Model(&Tag{}).Where("name = ?", tagName).First(&tag)
+
+	var songs []Song
+	s.DB.Table("songs").
+		Joins("JOIN song_tags on song_tags.tag_id=? AND song_tags.song_id=songs.id", tag.ID).
+		Preload("Artist").
+		Preload("Album").
+		Preload("Files").
+		Find(&songs)
+
+	p := struct {
+		Tag   Tag
+		Songs []Song
+	}{
+		Tag:   tag,
+		Songs: songs,
+	}
+	b, _ := json.Marshal(p)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(b)
+}
+
 type tagsPage struct {
 	Title string
 	Tags  []Tag
@@ -203,6 +235,18 @@ func (s Server) TagsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	t := getTemplate("tags.html")
 	t.Execute(w, p)
+}
+
+func (s Server) TagsAPIHandler(w http.ResponseWriter, r *http.Request) {
+	var tags []Tag
+	s.DB.Order("upper(name) asc").Find(&tags)
+
+	p := struct{ Tags []Tag }{
+		Tags: tags,
+	}
+	b, _ := json.Marshal(p)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(b)
 }
 
 type albumPage struct {

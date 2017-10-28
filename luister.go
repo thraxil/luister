@@ -62,7 +62,12 @@ func main() {
 	r.HandleFunc("/search/", s.SearchHandler)
 	r.HandleFunc("/random/", s.RandomHandler)
 
+	r.HandleFunc("/api/tags/", s.TagsAPIHandler)
+	r.HandleFunc("/api/tags/{tag}/", s.TagAPIHandler)
 	r.HandleFunc("/api/random/", s.SingleRandomHandler)
+	r.HandleFunc("/api/recentlyPlayed/", s.RecentlyPlayedAPIHandler)
+
+	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("./frontend/dist/static/"))))
 
 	log.Fatal(http.ListenAndServe(":8009", r))
 }

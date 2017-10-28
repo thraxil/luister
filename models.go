@@ -10,7 +10,7 @@ import (
 )
 
 type Artist struct {
-	ID        uint `gorm:"primary_key"`
+	ID        uint `gorm:"primary_key" json:"ID,string"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 
@@ -66,7 +66,7 @@ func (a Artist) UpdateName(db *gorm.DB, newName string) Artist {
 }
 
 type Album struct {
-	ID        uint `gorm:"primary_key"`
+	ID        uint `gorm:"primary_key" json:"ID,string"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 
@@ -117,7 +117,7 @@ func (a Album) UpdateName(db *gorm.DB, newName string) Album {
 }
 
 type Year struct {
-	ID   int
+	ID   int `json:"ID,string"`
 	Year string
 
 	Albums []Album
@@ -125,7 +125,7 @@ type Year struct {
 }
 
 type Song struct {
-	ID        uint `gorm:"primary_key"`
+	ID        uint `gorm:"primary_key" json:"ID,string"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 
@@ -181,7 +181,7 @@ func (s Song) UpdateTitle(db *gorm.DB, newTitle string) Song {
 }
 
 type File struct {
-	ID        uint `gorm:"primary_key"`
+	ID        uint `gorm:"primary_key" json:"ID,string"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 
@@ -205,7 +205,7 @@ func (f File) HumanSize() string {
 }
 
 type Play struct {
-	ID        uint `gorm:"primary_key"`
+	ID        uint `gorm:"primary_key" json:"ID,string"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 
@@ -214,7 +214,7 @@ type Play struct {
 }
 
 type Tag struct {
-	ID        uint `gorm:"primary_key"`
+	ID        uint `gorm:"primary_key" json:"ID,string"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 

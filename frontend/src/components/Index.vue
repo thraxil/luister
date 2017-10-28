@@ -16,7 +16,9 @@
             <tbody>
                 <tr v-for="play in recentlyPlayed">
                     <td></td>
-                    <td><a v-bind:href="'/s/' + play.Song.ID + '/'">{{play.Song.Title}}</a></td>
+                    <td>
+                        <song-link v-bind:id="play.Song.ID" v-bind:title="play.Song.Title"></song-link>
+                    </td>
                     <td><a v-bind:href="'/ar/' + play.Song.Artist.ID + '/'">{{play.Song.Artist.Name}}</a></td>
                     <td><a v-bind:href="'/al/' + play.Song.Album.ID + '/'">{{play.Song.Album.Name}}</a></td>
                     <td>
@@ -35,6 +37,7 @@
 <script>
  import axios from 'axios' 
  import Rating from '@/components/Rating'
+ import SongLink from '@/components/SongLink'
  
  export default {
      name: 'Index',
@@ -44,7 +47,8 @@
          }
      },
      components: {
-         'rating': Rating
+         'rating': Rating,
+         'song-link': SongLink
      },
      methods: {
          getData() {

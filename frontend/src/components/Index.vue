@@ -29,13 +29,6 @@
 
         <p v-else>No recently played songs</p>
 
-        <h2>Recently Added</h2>
-
-        <table v-if="recentlyAdded">
-
-        </table>
-        <p v-else>No recently added songs</p>
-
     </div>
 </template>
 
@@ -49,9 +42,6 @@
          return {
              'recentlyPlayed': []
          }
-     },
-     computed: {
-         recentlyAdded: function() { return []; }
      },
      components: {
          'rating': Rating

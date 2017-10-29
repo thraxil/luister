@@ -70,7 +70,7 @@
                 </tr>
 
                 
-                <tr v-for="(song, index) in playlist" v-if="playlistMode">
+                <tr v-for="(song, index) in playlist" v-if="playlistMode" :key="song.ID">
                     <td>
                         <span class="glyphicon glyphicon-minus" v-on:click="remove(index)"></span>
                         <span class="glyphicon glyphicon-chevron-up" v-on:click="toTheTop(index)"></span>

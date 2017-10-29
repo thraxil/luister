@@ -83,12 +83,31 @@ func (s Server) TagAPIHandler(w http.ResponseWriter, r *http.Request) {
 		Preload("Files").
 		Find(&songs)
 
+	randomSongs := make([]randomSong, len(songs))
+	for i, song := range songs {
+		randomSongs[i] = randomSong{
+			Title:     song.DisplayTitle(),
+			Track:     song.Track,
+			SongURL:   song.URL(),
+			Artist:    song.Artist.DisplayName(),
+			ArtistID:  fmt.Sprintf("%d", song.Artist.ID),
+			ArtistURL: song.Artist.URL(),
+			Album:     song.Album.DisplayName(),
+			AlbumID:   fmt.Sprintf("%d", song.Album.ID),
+			AlbumURL:  song.Album.URL(),
+			URL:       song.HakmesURL(),
+			ID:        fmt.Sprintf("%d", song.ID),
+			PlayURL:   song.PlayURL(),
+			Rating:    song.Rating,
+		}
+	}
+
 	p := struct {
 		Tag   Tag
-		Songs []Song
+		Songs []randomSong
 	}{
 		Tag:   tag,
-		Songs: songs,
+		Songs: randomSongs,
 	}
 	b, _ := json.Marshal(p)
 	w.Header().Set("Content-Type", "application/json")

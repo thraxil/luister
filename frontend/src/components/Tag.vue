@@ -11,16 +11,19 @@
                 <table class="table table-striped table-condensed" id="songs">
                     <tr v-for="song in songs">
                         <td>
+                            <span class="glyphicon glyphicon-plus" v-on:click="addToPlaylist(song)"></span>
+                        </td>
+                        <td>
                             <song-link v-bind:id="song.ID"
                                        v-bind:title="song.Title"></song-link>
                         </td>
                         <td>
-                            <artist-link v-bind:id="song.Artist.ID"
-                                         v-bind:name="song.Artist.Name"></artist-link>
+                            <artist-link v-bind:id="song.ArtistID"
+                                         v-bind:name="song.Artist"></artist-link>
                         </td>
                         <td>
-                            <album-link v-bind:id="song.Album.ID"
-                                        v-bind:name="song.Album.Name"></album-link>
+                            <album-link v-bind:id="song.AlbumID"
+                                        v-bind:name="song.Album"></album-link>
                         </td>
                         <td>
                             <rating v-bind:id="song.ID"
@@ -67,6 +70,9 @@
              }).catch(error => {
                  console.log(error)
              })
+         },
+         addToPlaylist(song) {
+             bus.$emit('addToPlaylist', song)
          }
      },
      created () {

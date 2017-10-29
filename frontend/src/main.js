@@ -8,6 +8,8 @@ import router from './router'
 
 Vue.config.productionTip = false
 
+window.bus = new Vue();
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
@@ -27,3 +29,4 @@ new Vue({
     template: '<Player/>',
     components: { Player }
 })
+

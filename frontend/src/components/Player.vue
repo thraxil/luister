@@ -219,6 +219,10 @@
      },
      created () {
          this.getData()
+         var self = this
+         bus.$on('addToPlaylist', function (song) {
+             self.playlist.push(song)
+         })
      },
      mounted () {
          this.audio = this.$el.querySelectorAll('audio')[0]

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h2>Recently Played</h2>
+        <h2>Recently Played <span class="glyphicon glyphicon-refresh pull-right" v-on:click="getData()"></span></h2>
 
         <table class="table table-striped table-condensed" v-if="recentlyPlayed.length">
             <thead>

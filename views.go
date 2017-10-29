@@ -452,28 +452,34 @@ type randomSong struct {
 	Rating    int
 }
 
-func (s Server) SingleRandomHandler(w http.ResponseWriter, r *http.Request) {
-	var song Song
+func (s Server) NRandomSongs(n int) []randomSong {
+	var songs []Song
 
-	s.DB.Model(&Song{}).Order("random()").Limit(1).Preload(
+	s.DB.Model(&Song{}).Order("random()").Limit(n).Preload(
 		"Files").Preload(
-		"Artist").Preload("Album").Find(&song)
+		"Artist").Preload("Album").Find(&songs)
 
-	p := randomSong{
-		Title:     song.DisplayTitle(),
-		Track:     song.Track,
-		SongURL:   song.URL(),
-		Artist:    song.Artist.DisplayName(),
-		ArtistURL: song.Artist.URL(),
-		Album:     song.Album.DisplayName(),
-		AlbumURL:  song.Album.URL(),
-		URL:       song.HakmesURL(),
-		ID:        fmt.Sprintf("%d", song.ID),
-		PlayURL:   song.PlayURL(),
-		Rating:    song.Rating,
+	randomSongs := make([]randomSong, n)
+	for i, song := range songs {
+		randomSongs[i] = randomSong{
+			Title:     song.DisplayTitle(),
+			Track:     song.Track,
+			SongURL:   song.URL(),
+			Artist:    song.Artist.DisplayName(),
+			ArtistURL: song.Artist.URL(),
+			Album:     song.Album.DisplayName(),
+			AlbumURL:  song.Album.URL(),
+			URL:       song.HakmesURL(),
+			ID:        fmt.Sprintf("%d", song.ID),
+			PlayURL:   song.PlayURL(),
+			Rating:    song.Rating,
+		}
 	}
+	return randomSongs
+}
 
-	b, _ := json.Marshal(p)
+func (s Server) SingleRandomHandler(w http.ResponseWriter, r *http.Request) {
+	b, _ := json.Marshal(s.NRandomSongs(1)[0])
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(b)
 }

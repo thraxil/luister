@@ -12,14 +12,9 @@
      props: ['initialRating', 'id'],
      data () {
          return {
-             'currentRating': this.initialRating,
+             'rating': this.initialRating,
              'id': this.id
          }
-     },
-     computed: {
-         'rating': function() {
-             return this.currentRating
-         },
      },
      methods: {
          ratingIcon: function(level) {
@@ -30,7 +25,7 @@
              }
          },
          setRating: function(level) {
-             this.currentRating = level;
+             this.rating = level;
              const path = `/r/` + this.id + `/`
              var data = new FormData()
              data.append('rating', level)

@@ -44,7 +44,11 @@
             <tbody>
 
                 <tr class="active info" v-if="current">
-                    <td></td>
+                    <td>
+                        <span class="glyphicon glyphicon-fast-forward"
+                              v-on:click="nextTrack()"
+                        ></span>
+                    </td>
                     
                     <td>
                         <song-link v-bind:id="current.ID"

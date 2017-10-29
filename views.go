@@ -60,13 +60,34 @@ func (s Server) IndexHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s Server) RecentlyPlayedAPIHandler(w http.ResponseWriter, r *http.Request) {
+	n := 10
 	var plays []Play
-	s.DB.Limit(25).Order("created_at desc").Preload(
-		"Song").Preload("Song.Artist").Preload("Song.Album").Find(&plays)
+	s.DB.Limit(n).Order("created_at desc").Preload(
+		"Song").Preload("Song.Artist").Preload("Song.Album").Preload("Song.Files").Find(&plays)
 
-	p := struct{ Plays []Play }{
-		Plays: plays,
+	randomSongs := make([]randomSong, n)
+	for i, play := range plays {
+		randomSongs[i] = randomSong{
+			Title:     play.Song.DisplayTitle(),
+			Track:     play.Song.Track,
+			SongURL:   play.Song.URL(),
+			Artist:    play.Song.Artist.DisplayName(),
+			ArtistID:  fmt.Sprintf("%d", play.Song.Artist.ID),
+			ArtistURL: play.Song.Artist.URL(),
+			Album:     play.Song.Album.DisplayName(),
+			AlbumID:   fmt.Sprintf("%d", play.Song.Album.ID),
+			AlbumURL:  play.Song.Album.URL(),
+			URL:       play.Song.HakmesURL(),
+			ID:        fmt.Sprintf("%d", play.Song.ID),
+			PlayURL:   play.Song.PlayURL(),
+			Rating:    play.Song.Rating,
+		}
 	}
+
+	p := struct{ Plays []randomSong }{
+		Plays: randomSongs,
+	}
+
 	b, _ := json.Marshal(p)
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(b)

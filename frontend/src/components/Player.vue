@@ -70,8 +70,11 @@
                 </tr>
 
                 
-                <tr v-for="song in playlist" v-if="playlistMode">
-                    <td></td>
+                <tr v-for="(song, index) in playlist" v-if="playlistMode">
+                    <td>
+                        <span class="glyphicon glyphicon-minus" v-on:click="remove(index)"></span>
+                        <span class="glyphicon glyphicon-chevron-up" v-on:click="toTheTop(index)"></span>
+                    </td>
                     
                     <td>
                         <song-link v-bind:id="song.ID"
@@ -215,6 +218,14 @@
          },
          logPlay() {
              axios.get(this.current.PlayURL)
+         },
+         remove(idx) {
+             this.playlist.splice(idx, 1)
+         },
+         toTheTop(idx) {
+             var s = this.playlist[idx]
+             this.playlist.splice(idx, 1)
+             this.playlist.unshift(s)
          }
      },
      created () {

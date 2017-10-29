@@ -17,17 +17,20 @@
                 <tr v-for="play in recentlyPlayed">
                     <td></td>
                     <td>
-                        <song-link v-bind:id="play.Song.ID" v-bind:title="play.Song.Title"></song-link>
+                        <song-link v-bind:id="play.Song.ID"
+                                   v-bind:title="play.Song.Title"></song-link>
                     </td>
                     <td>
                         <artist-link v-bind:id="play.Song.Artist.ID"
                                      v-bind:name="play.Song.Artist.Name"></artist-link>
                     </td>
                     <td>
-                        <a v-bind:href="'/al/' + play.Song.Album.ID + '/'">{{play.Song.Album.Name}}</a>
+                        <album-link v-bind:id="play.Song.Album.ID"
+                                     v-bind:name="play.Song.Album.Name"></album-link>
                     </td>
                     <td>
-                        <rating v-bind:id="play.Song.ID" v-bind:initial-rating="play.Song.Rating"></rating>
+                        <rating v-bind:id="play.Song.ID"
+                                v-bind:initial-rating="play.Song.Rating"></rating>
                     </td>
                 </tr>
             </tbody>
@@ -43,7 +46,8 @@
  import axios from 'axios' 
  import Rating from '@/components/Rating'
  import SongLink from '@/components/SongLink'
- import ArtistLink from '@/components/ArtistLink' 
+ import ArtistLink from '@/components/ArtistLink'
+ import AlbumLink from '@/components/AlbumLink'  
  
  export default {
      name: 'Index',
@@ -55,7 +59,8 @@
      components: {
          'rating': Rating,
          'song-link': SongLink,
-         'artist-link': ArtistLink
+         'artist-link': ArtistLink,
+         'album-link': AlbumLink,
      },
      methods: {
          getData() {

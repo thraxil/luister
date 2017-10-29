@@ -11,17 +11,20 @@
                 <table class="table table-striped table-condensed" id="songs">
                     <tr v-for="song in songs">
                         <td>
-                            <song-link v-bind:id="song.ID" v-bind:title="song.Title"></song-link>
+                            <song-link v-bind:id="song.ID"
+                                       v-bind:title="song.Title"></song-link>
                         </td>
                         <td>
                             <artist-link v-bind:id="song.Artist.ID"
                                          v-bind:name="song.Artist.Name"></artist-link>
                         </td>
                         <td>
-                            <a v-bind:href="'/al/' + song.Album.ID + '/'">{{song.Album.Name}}</a>
+                            <album-link v-bind:id="song.Album.ID"
+                                        v-bind:name="song.Album.Name"></album-link>
                         </td>
                         <td>
-                            <rating v-bind:id="song.ID" v-bind:initial-rating="song.Rating"></rating>
+                            <rating v-bind:id="song.ID"
+                                    v-bind:initial-rating="song.Rating"></rating>
                         </td>
                     </tr>
                 </table>
@@ -35,7 +38,8 @@
  import axios from 'axios'
  import Rating from '@/components/Rating'
  import SongLink from '@/components/SongLink'
- import ArtistLink from '@/components/ArtistLink' 
+ import ArtistLink from '@/components/ArtistLink'
+ import AlbumLink from '@/components/AlbumLink'  
 
 
  export default {
@@ -51,7 +55,8 @@
      components: {
          'rating': Rating,
          'song-link': SongLink,
-         'artist-link': ArtistLink
+         'artist-link': ArtistLink,
+         'album-link': AlbumLink,
      },
      methods: {
          getData() {

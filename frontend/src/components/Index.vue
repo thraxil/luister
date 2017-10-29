@@ -30,7 +30,9 @@
                     </td>
                     <td>
                         <rating v-bind:id="play.Song.ID"
-                                v-bind:initial-rating="play.Song.Rating"></rating>
+                                v-bind:initial-rating="play.Song.Rating"
+                                :key="play.Song"
+                        ></rating>
                     </td>
                 </tr>
             </tbody>

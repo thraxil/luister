@@ -443,8 +443,10 @@ type randomSong struct {
 	Track     int
 	SongURL   string
 	Artist    string
+	ArtistID  string
 	ArtistURL string
 	Album     string
+	AlbumID   string
 	AlbumURL  string
 	URL       string
 	ID        string
@@ -466,8 +468,10 @@ func (s Server) NRandomSongs(n int) []randomSong {
 			Track:     song.Track,
 			SongURL:   song.URL(),
 			Artist:    song.Artist.DisplayName(),
+			ArtistID:  fmt.Sprintf("%d", song.Artist.ID),
 			ArtistURL: song.Artist.URL(),
 			Album:     song.Album.DisplayName(),
+			AlbumID:   fmt.Sprintf("%d", song.Album.ID),
 			AlbumURL:  song.Album.URL(),
 			URL:       song.HakmesURL(),
 			ID:        fmt.Sprintf("%d", song.ID),
@@ -480,6 +484,16 @@ func (s Server) NRandomSongs(n int) []randomSong {
 
 func (s Server) SingleRandomHandler(w http.ResponseWriter, r *http.Request) {
 	b, _ := json.Marshal(s.NRandomSongs(1)[0])
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(b)
+}
+
+func (s Server) RandomPlaylistHandler(w http.ResponseWriter, r *http.Request) {
+	songs := s.NRandomSongs(5)
+	p := struct{ Songs []randomSong }{
+		Songs: songs,
+	}
+	b, _ := json.Marshal(p)
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(b)
 }

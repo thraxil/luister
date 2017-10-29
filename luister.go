@@ -65,6 +65,7 @@ func main() {
 	r.HandleFunc("/api/tags/", s.TagsAPIHandler)
 	r.HandleFunc("/api/tags/{tag}/", s.TagAPIHandler)
 	r.HandleFunc("/api/random/", s.SingleRandomHandler)
+	r.HandleFunc("/api/randomPlaylist/", s.RandomPlaylistHandler)
 	r.HandleFunc("/api/recentlyPlayed/", s.RecentlyPlayedAPIHandler)
 
 	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("./frontend/dist/static/"))))

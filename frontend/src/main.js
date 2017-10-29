@@ -3,6 +3,7 @@
 import Vue from 'vue'
 import App from './App'
 import Nav from './Nav'
+import Player from '@/components/Player'
 import router from './router'
 
 Vue.config.productionTip = false
@@ -19,4 +20,10 @@ new Vue({
   el: '#nav',
   template: '<Nav/>',
   components: { Nav }
+})
+
+new Vue({
+    el: '#player',
+    template: '<Player/>',
+    components: { Player }
 })

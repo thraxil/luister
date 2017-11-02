@@ -197,7 +197,11 @@
              
              // new current track
              var newCurrent = this.playlist.shift()
-             this.recentlyPlayed.unshift(newCurrent)
+             
+             // move the old one over to the recently played list
+             this.recentlyPlayed.unshift(this.current)
+             // then trim it
+             this.recentlyPlayed.splice(-1, 1)
              
              this.current = newCurrent
              this.audio.src = this.current.URL

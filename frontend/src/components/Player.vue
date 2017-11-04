@@ -103,7 +103,7 @@
                     </td>
                 </tr>
 
-                <tr v-for="song in recentlyPlayed" v-if="recentMode">
+                <tr v-for="song in recentlyPlayed" v-if="recentMode" :key="song.ID">
                     <td></td>
                     
                     <td>
@@ -146,7 +146,6 @@
          return {
              'recentlyPlayed':  [],
              'playlist': [],
-             'current': undefined,
              'isPaused': false,
              'audio': undefined,
              'mode': 'playlist'
@@ -161,6 +160,9 @@
          },
          'recentMode': function () {
              return this.mode === 'recent'
+         },
+         'current': function () {
+             return this.$store.state.current
          }
      },
      components: {
@@ -184,8 +186,8 @@
              const playlistPath = `/api/randomPlaylist/`
              axios.get(playlistPath).then(response => {
                  var songs = response.data.Songs
-                 
-                 this.current = songs.shift()
+
+                 this.$store.commit('setCurrent', songs.shift())
                  
                  this.playlist = songs
              }).catch(error => {
@@ -202,9 +204,8 @@
              this.recentlyPlayed.unshift(this.current)
              // then trim it
              this.recentlyPlayed.splice(-1, 1)
-             
-             this.current = newCurrent
-             this.audio.src = this.current.URL
+             this.$store.commit('setCurrent', newCurrent)
+             this.audio.src = newCurrent.URL
              
              this.audio.play()
              
@@ -227,7 +228,7 @@
              })
          },
          logPlay() {
-             axios.get(this.current.PlayURL)
+             axios.get(this.$store.state.current.PlayURL)
          },
          remove(idx) {
              this.playlist.splice(idx, 1)

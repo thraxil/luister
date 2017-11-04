@@ -68,7 +68,7 @@
                     <td>
                         <rating v-bind:id="current.ID"
                                 v-bind:initial-rating="current.Rating"
-                                :key="current"
+                                :key="current.ID"
                         ></rating>
                     </td>
                 </tr>
@@ -99,7 +99,9 @@
                     
                     <td>
                         <rating v-bind:id="song.ID"
-                                v-bind:initial-rating="song.Rating"></rating>
+                                v-bind:initial-rating="song.Rating"
+                                :key="song.ID"
+                        ></rating>
                     </td>
                 </tr>
 
@@ -123,7 +125,9 @@
                     
                     <td>
                         <rating v-bind:id="song.ID"
-                                v-bind:initial-rating="song.Rating"></rating>
+                                v-bind:initial-rating="song.Rating"
+                                :key="song.ID"
+                        ></rating>
                     </td>
                 </tr>
 

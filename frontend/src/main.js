@@ -10,8 +10,6 @@ import router from './router'
 Vue.use(Vuex)
 Vue.config.productionTip = false
 
-window.bus = new Vue();
-
 const store = new Vuex.Store({
     state: {
         current: undefined,
@@ -21,6 +19,33 @@ const store = new Vuex.Store({
     mutations: {
         setCurrent(state, c) {
             state.current = c
+        },
+        setPlaylist(state, p) {
+            state.playlist = p
+        },
+        setRecent(state, r) {
+            state.recent = r
+        },
+        nextTrack(state) {
+            // new current track
+            var newCurrent = state.playlist.shift()
+             
+            // move the old one over to the recently played list
+            state.recent.unshift(state.current)
+            // then trim it
+            state.recent.splice(-1, 1)
+            state.current = newCurrent
+        },
+        appendTrack(state, track) {
+            state.playlist.push(track);
+        },
+        remove(state, idx) {
+            state.playlist.splice(idx, 1)
+        },
+        toTheTop(state, idx) {
+            var s = state.playlist[idx]
+            state.playlist.splice(idx, 1)
+            state.playlist.unshift(s)
         }
     }
 })

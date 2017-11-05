@@ -148,8 +148,6 @@
      name: 'Player',
      data () {
          return {
-             'recentlyPlayed':  [],
-             'playlist': [],
              'isPaused': false,
              'audio': undefined,
              'mode': 'playlist'
@@ -167,6 +165,12 @@
          },
          'current': function () {
              return this.$store.state.current
+         },
+         'playlist': function () {
+             return this.$store.state.playlist
+         },
+         'recentlyPlayed': function () {
+             return this.$store.state.recent
          }
      },
      components: {
@@ -179,8 +183,7 @@
          getRecent() {
              const recentPath = `/api/recentlyPlayed/`
              axios.get(recentPath).then(response => {
-                 console.log(response.data)
-                 this.recentlyPlayed = response.data.Plays
+                 this.$store.commit('setRecent', response.data.Plays)
              }).catch(error => {
                  console.log(error)
              })
@@ -192,24 +195,16 @@
                  var songs = response.data.Songs
 
                  this.$store.commit('setCurrent', songs.shift())
-                 
-                 this.playlist = songs
+                 this.$store.commit('setPlaylist', songs)
              }).catch(error => {
                  console.log(error)
              })
          },
          nextTrack() {
              this.isPaused = false
-             
-             // new current track
-             var newCurrent = this.playlist.shift()
-             
-             // move the old one over to the recently played list
-             this.recentlyPlayed.unshift(this.current)
-             // then trim it
-             this.recentlyPlayed.splice(-1, 1)
-             this.$store.commit('setCurrent', newCurrent)
-             this.audio.src = newCurrent.URL
+
+             this.$store.commit('nextTrack')
+             this.audio.src = this.$store.state.current.URL
              
              this.audio.play()
              
@@ -228,27 +223,21 @@
          addRandomTrack() {
              const path = `/api/random/`
              axios.get(path).then(response => {
-                 this.playlist.push(response.data);
+                 this.$store.commit('appendTrack', response.data)
              })
          },
          logPlay() {
              axios.get(this.$store.state.current.PlayURL)
          },
          remove(idx) {
-             this.playlist.splice(idx, 1)
+             this.$store.commit('remove', idx)
          },
          toTheTop(idx) {
-             var s = this.playlist[idx]
-             this.playlist.splice(idx, 1)
-             this.playlist.unshift(s)
+             this.$store.commit('toTheTop', idx)
          }
      },
      created () {
          this.getData()
-         var self = this
-         bus.$on('addToPlaylist', function (song) {
-             self.playlist.push(song)
-         })
      },
      mounted () {
          this.audio = this.$el.querySelectorAll('audio')[0]

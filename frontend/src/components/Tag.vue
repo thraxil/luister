@@ -72,7 +72,7 @@
              })
          },
          addToPlaylist(song) {
-             bus.$emit('addToPlaylist', song)
+             this.$store.commit('appendTrack', song)
          }
      },
      created () {

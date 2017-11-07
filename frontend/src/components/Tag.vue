@@ -66,6 +66,9 @@
              const path = `/api/tags/` + this.$route.params.tagname + `/`
              axios.get(path).then(response => {
                  this.tag = response.data.Tag
+                 for (var i=0; i < response.data.Songs.length; i++) {
+                     this.$store.commit('setRating', response.data.Songs[i])
+                 }
                  this.songs = response.data.Songs
              }).catch(error => {
                  console.log(error)

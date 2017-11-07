@@ -9,11 +9,15 @@
 <script>
  export default {
      name: 'Rating',
-     props: ['initialRating', 'id'],
+     props: ['id'],
      data () {
          return {
-             'rating': this.initialRating,
              'id': this.id
+         }
+     },
+     computed: {
+         'rating': function () {
+             return this.$store.state.ratings[this.id]
          }
      },
      methods: {
@@ -25,7 +29,7 @@
              }
          },
          setRating: function(level) {
-             this.rating = level;
+             this.$store.commit('setRating', {'ID': this.id, 'Rating': level})
              const path = `/r/` + this.id + `/`
              var data = new FormData()
              data.append('rating', level)

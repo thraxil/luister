@@ -76,6 +76,10 @@ func (s Server) SongHandler(w http.ResponseWriter, r *http.Request) {
 	var file File
 	s.DB.Where("song_id = ?", songID).First(&file)
 
+	//	fmt.Printf("%s\n", song.YearID)
+	//	fmt.Printf("%s\n", uint(song.YearID))
+	//	fmt.Printf("%s\n", int64(song.YearID))
+
 	p := songPage{
 		Title: song.Title,
 		Song:  song,

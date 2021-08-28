@@ -28,7 +28,7 @@ func main() {
 	var str = flag.Bool("strip", false, "strip nulls")
 	flag.Parse()
 
-	const addr = "postgresql://luister@localhost:26257/luister?sslmode=disable"
+	const addr = "postgresql://luister@puck:26257/luister?sslmode=disable"
 	db, err := gorm.Open("postgres", addr)
 	if err != nil {
 		log.Fatal(err)
@@ -204,14 +204,14 @@ func importFile(db *gorm.DB, filename, sha1 string, size string) {
 	db.FirstOrCreate(&artist, Artist{Name: m.Artist()})
 
 	var album Album
-	db.FirstOrCreate(&album, Album{Name: m.Album(), YearID: year.ID, ArtistID: artist.ID})
+	db.FirstOrCreate(&album, Album{Name: m.Album(), Year: year, ArtistID: artist.ID})
 
 	var song Song
 	db.FirstOrCreate(&song, Song{
 		Title:    m.Title(),
 		ArtistID: artist.ID,
 		AlbumID:  album.ID,
-		YearID:   year.ID,
+		Year:     year,
 		Track:    track,
 	})
 
@@ -231,7 +231,7 @@ func importFile(db *gorm.DB, filename, sha1 string, size string) {
 }
 
 func hakmesURL(sha1, ext string) string {
-	return "http://localhost:9300/file/" + sha1 + "/file" + ext
+	return "http://puck:9300/file/" + sha1 + "/file" + ext
 }
 
 func getFromHakmes(url string) ([]byte, error) {

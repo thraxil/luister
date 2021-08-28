@@ -10,7 +10,7 @@ import (
 )
 
 type Artist struct {
-	ID        uint `gorm:"primary_key" json:"ID,string"`
+	ID        int `gorm:"primary_key" json:"ID,string"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 
@@ -66,13 +66,13 @@ func (a Artist) UpdateName(db *gorm.DB, newName string) Artist {
 }
 
 type Album struct {
-	ID        uint `gorm:"primary_key" json:"ID,string"`
+	ID        int `gorm:"primary_key" json:"ID,string"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 
 	Name     string
-	ArtistID uint `gorm:"index"`
-	YearID   int  `gorm:"index"`
+	ArtistID int `gorm:"index"`
+	YearID   int `gorm:"index"`
 	Artist   Artist
 	Year     Year
 
@@ -117,7 +117,7 @@ func (a Album) UpdateName(db *gorm.DB, newName string) Album {
 }
 
 type Year struct {
-	ID   int `json:"ID,string"`
+	ID   int `json:"ID,string" gorm:"primary_key"`
 	Year string
 
 	Albums []Album
@@ -125,14 +125,13 @@ type Year struct {
 }
 
 type Song struct {
-	ID        uint `gorm:"primary_key" json:"ID,string"`
+	ID        int `gorm:"primary_key" json:"ID,string"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 
 	Title    string
-	ArtistID uint `gorm:"index"`
-	AlbumID  uint `gorm:"index"`
-	YearID   int  `gorm:"index"`
+	ArtistID int `gorm:"index"`
+	AlbumID  int `gorm:"index"`
 	Track    int
 
 	Plays []Play
@@ -140,7 +139,8 @@ type Song struct {
 
 	Artist Artist
 	Album  Album
-	Year   Year
+	Year   Year `json:"year" gorm:"ForeignKey:YearID"`
+	YearID int  `json:"-"`
 	Files  []File
 
 	Rating int `gorm:"index;not null;default:0"`
@@ -181,11 +181,11 @@ func (s Song) UpdateTitle(db *gorm.DB, newTitle string) Song {
 }
 
 type File struct {
-	ID        uint `gorm:"primary_key" json:"ID,string"`
+	ID        int64 `gorm:"primary_key" json:"ID,string"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 
-	SongID   uint   `gorm:"index"`
+	SongID   int    `gorm:"index"`
 	Filename string `gorm:"index"`
 	Format   string `gorm:"index"`
 	Filetype string
@@ -197,7 +197,7 @@ type File struct {
 
 func (f File) HakmesURL() string {
 	ext := filepath.Ext(f.Filename)
-	return "http://localhost:9300/file/" + f.Hash + "/file" + ext
+	return "http://puck:9300/file/" + f.Hash + "/file" + ext
 }
 
 func (f File) HumanSize() string {
@@ -205,16 +205,16 @@ func (f File) HumanSize() string {
 }
 
 type Play struct {
-	ID        uint `gorm:"primary_key" json:"ID,string"`
+	ID        int64 `gorm:"primary_key" json:"ID,string"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 
-	SongID uint `gorm:"index"`
+	SongID int `gorm:"index"`
 	Song   Song
 }
 
 type Tag struct {
-	ID        uint `gorm:"primary_key" json:"ID,string"`
+	ID        int `gorm:"primary_key" json:"ID,string"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 

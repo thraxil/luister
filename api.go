@@ -47,7 +47,7 @@ func (s Server) PlayHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	songID, _ := strconv.Atoi(vars["song"])
 
-	play := Play{SongID: uint(songID)}
+	play := Play{SongID: songID}
 	s.DB.Create(&play)
 	fmt.Fprintf(w, "ok")
 }

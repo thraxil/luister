@@ -23,13 +23,25 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
+var HakmesBase string
+
 func main() {
 	var imp = flag.Bool("import", false, "import from csv")
 	var str = flag.Bool("strip", false, "strip nulls")
 	flag.Parse()
 
-	const addr = "postgresql://luister@puck:26257/luister?sslmode=disable"
-	db, err := gorm.Open("postgres", addr)
+	dbaddr, ok := os.LookupEnv("LUISTER_DB_URL")
+	if !ok {
+		log.Fatal("Required LUISTER_DB_URL not set")
+	}
+
+	hakmesBase, ok := os.LookupEnv("LUISTER_HAKMES_BASE")
+	if !ok {
+		log.Fatal("Required LUISTER_HAKMES_BASE not set")
+	}
+	HakmesBase = hakmesBase
+
+	db, err := gorm.Open("postgres", dbaddr)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -231,7 +243,7 @@ func importFile(db *gorm.DB, filename, sha1 string, size string) {
 }
 
 func hakmesURL(sha1, ext string) string {
-	return "http://puck:9300/file/" + sha1 + "/file" + ext
+	return HakmesBase + "/file/" + sha1 + "/file" + ext
 }
 
 func getFromHakmes(url string) ([]byte, error) {

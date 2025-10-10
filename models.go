@@ -197,7 +197,7 @@ type File struct {
 
 func (f File) HakmesURL() string {
 	ext := filepath.Ext(f.Filename)
-	return "http://puck:9300/file/" + f.Hash + "/file" + ext
+	return HakmesBase + "/file/" + f.Hash + "/file" + ext
 }
 
 func (f File) HumanSize() string {

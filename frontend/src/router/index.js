@@ -1,15 +1,13 @@
-import Vue from 'vue'
-import Router from 'vue-router'
-import Index from '@/components/Index'
-import Tags from '@/components/Tags'
-import Tag from '@/components/Tag'
+import { createRouter, createWebHashHistory } from 'vue-router'
+import Index from '@/components/Index.vue'
+import Tags from '@/components/Tags.vue'
+import Tag from '@/components/Tag.vue'
 
-Vue.use(Router)
-
-export default new Router({
-    routes: [
-        { path: '/', name: 'Index', component: Index },
-        { path: '/t/', name: 'Tags', component: Tags },
-        { path: '/t/:tagname/', name: 'Tag', component: Tag }
-    ]
+export default createRouter({
+  history: createWebHashHistory(),
+  routes: [
+    { path: '/', name: 'Index', component: Index },
+    { path: '/t/', name: 'Tags', component: Tags },
+    { path: '/t/:tagname/', name: 'Tag', component: Tag }
+  ]
 })

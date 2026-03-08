@@ -1,9 +1,9 @@
 <template>
   <nav class="navbar navbar-default" id="nav">
     <div class="navbar-header">
-      <a class="navbar-brand" href="/vue/#/">
+      <router-link class="navbar-brand" to="/">
         <span class="glyphicon glyphicon-home"></span>
-      </a>
+      </router-link>
     </div>
    
     <form class="navbar-form navbar-right" action="/vue/#/search/" method="get" >
@@ -14,16 +14,13 @@
                
     <ul class="nav navbar-nav">
       <li><a href="/ar/">Artists</a></li>
-      <li><a href="/vue/#/t/">Tags</a></li>                    
+      <li><router-link to="/t/">Tags</router-link></li>                    
     </ul>
   </nav>
 </template>
 
 <script>
 export default {
-  name: 'nav'
+  name: 'Nav'
 }
 </script>
-
-<style>
-</style>

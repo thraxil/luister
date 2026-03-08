@@ -82,7 +82,7 @@ func main() {
 	r.HandleFunc("/api/randomPlaylist/", s.RandomPlaylistHandler)
 	r.HandleFunc("/api/recentlyPlayed/", s.RecentlyPlayedAPIHandler)
 
-	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("./frontend/dist/static/"))))
+	r.PathPrefix("/dist/").Handler(http.StripPrefix("/dist/", http.FileServer(http.Dir("./frontend/dist/"))))
 	r.Handle("/metrics", promhttp.Handler())
 
 	log.Fatal(http.ListenAndServe(":8009", r))

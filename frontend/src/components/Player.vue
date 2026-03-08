@@ -3,29 +3,30 @@
         <div class="row">
             <div class="col-md-4">
                 <audio preload="auto" controls=""
-                       v-on:ended="nextTrack()"
-                       v-on:play="onPlay()"
-                       v-on:pause="onPause()">
+                       @ended="nextTrack()"
+                       @play="onPlay()"
+                       @pause="onPause()"
+                       ref="audioPlayer">
                     <source v-if="current"
-                            v-bind:src="current.URL">
+                            :src="current.URL">
                 </audio>
             </div>
             <div class="col-md-8">
                 <ul class="nav nav-pills" v-if="playlistMode">
-                    <li role="presentation"><a href="#" v-on:click.prevent="mode='hide'">Hide</a></li>
+                    <li role="presentation"><a href="#" @click.prevent="mode='hide'">Hide</a></li>
                     <li role="presentation" class="active"><a href="#">Playlist</a></li>
-                    <li role="presentation"><a href="#" v-on:click.prevent="mode='recent'">Recent</a></li>            
+                    <li role="presentation"><a href="#" @click.prevent="mode='recent'">Recent</a></li>            
                 </ul>
 
                 <ul class="nav nav-pills" v-if="hideMode">
                     <li role="presentation" class="active"><a href="#">Hide</a></li>
-                    <li role="presentation"><a href="#" v-on:click.prevent="mode='playlist'">Playlist</a></li>
-                    <li role="presentation"><a href="#" v-on:click.prevent="mode='recent'">Recent</a></li>            
+                    <li role="presentation"><a href="#" @click.prevent="mode='playlist'">Playlist</a></li>
+                    <li role="presentation"><a href="#" @click.prevent="mode='recent'">Recent</a></li>            
                 </ul>
 
                 <ul class="nav nav-pills" v-if="recentMode">
-                    <li role="presentation"><a href="#" v-on:click.prevent="mode='hide'">Hide</a></li>
-                    <li role="presentation"><a href="#" v-on:click.prevent="mode='playlist'">Playlist</a></li>
+                    <li role="presentation"><a href="#" @click.prevent="mode='hide'">Hide</a></li>
+                    <li role="presentation"><a href="#" @click.prevent="mode='playlist'">Playlist</a></li>
                     <li role="presentation" class="active"><a href="#">Recent</a></li>            
                 </ul>
             </div>
@@ -46,81 +47,84 @@
                 <tr class="active info" v-if="current">
                     <td>
                         <span class="glyphicon glyphicon-fast-forward"
-                              v-on:click="nextTrack()"
+                              @click="nextTrack()"
                         ></span>
                     </td>
                     
                     <td>
-                        <song-link v-bind:id="current.ID"
-                                   v-bind:title="current.Title"></song-link>
+                        <song-link :id="current.ID"
+                                   :title="current.Title"></song-link>
                     </td>
                     
                     <td>
-                        <artist-link v-bind:id="current.ArtistID"
-                                     v-bind:name="current.Artist"></artist-link>
+                        <artist-link :id="current.ArtistID"
+                                     :name="current.Artist"></artist-link>
                     </td>
                     
                     <td>
-                        <album-link v-bind:id="current.AlbumID"
-                                    v-bind:name="current.Album"></album-link>
+                        <album-link :id="current.AlbumID"
+                                    :name="current.Album"></album-link>
                     </td>
                     
                     <td>
-                        <rating v-bind:id="current.ID"></rating>
+                        <rating :id="current.ID"></rating>
                     </td>
                 </tr>
 
-                
-                <tr v-for="(song, index) in playlist" v-if="playlistMode" :key="song.ID">
+                <template v-if="playlistMode">
+                  <tr v-for="(song, index) in playlist" :key="song.ID">
                     <td>
-                        <span class="glyphicon glyphicon-minus" v-on:click="remove(index)"></span>
-                        <span class="glyphicon glyphicon-chevron-up" v-on:click="toTheTop(index)"
+                        <span class="glyphicon glyphicon-minus" @click="remove(index)"></span>
+                        <span class="glyphicon glyphicon-chevron-up" @click="toTheTop(index)"
                               v-if="index > 0"
                         ></span>
                     </td>
                     
                     <td>
-                        <song-link v-bind:id="song.ID"
-                                   v-bind:title="song.Title"></song-link>
+                        <song-link :id="song.ID"
+                                   :title="song.Title"></song-link>
                     </td>
                     
                     <td>
-                        <artist-link v-bind:id="song.ArtistID"
-                                     v-bind:name="song.Artist"></artist-link>
+                        <artist-link :id="song.ArtistID"
+                                     :name="song.Artist"></artist-link>
                     </td>
                     
                     <td>
-                        <album-link v-bind:id="song.AlbumID"
-                                    v-bind:name="song.Album"></album-link>
+                        <album-link :id="song.AlbumID"
+                                    :name="song.Album"></album-link>
                     </td>
                     
                     <td>
-                        <rating v-bind:id="song.ID"></rating>
+                        <rating :id="song.ID"></rating>
                     </td>
-                </tr>
+                  </tr>
+                </template>
 
-                <tr v-for="song in recentlyPlayed" v-if="recentMode" :key="song.ID">
+                <template v-if="recentMode">
+                  <tr v-for="song in recentlyPlayed" :key="song.ID">
                     <td></td>
                     
                     <td>
-                        <song-link v-bind:id="song.ID"
-                                   v-bind:title="song.Title"></song-link>
+                        <song-link :id="song.ID"
+                                   :title="song.Title"></song-link>
                     </td>
                     
                     <td>
-                        <artist-link v-bind:id="song.ArtistID"
-                                     v-bind:name="song.Artist"></artist-link>
+                        <artist-link :id="song.ArtistID"
+                                     :name="song.Artist"></artist-link>
                     </td>
                     
                     <td>
-                        <album-link v-bind:id="song.AlbumID"
-                                    v-bind:name="song.Album"></album-link>
+                        <album-link :id="song.AlbumID"
+                                    :name="song.Album"></album-link>
                     </td>
                     
                     <td>
-                        <rating v-bind:id="song.ID"></rating>
+                        <rating :id="song.ID"></rating>
                     </td>
-                </tr>
+                  </tr>
+                </template>
 
             </tbody>
         </table>
@@ -130,45 +134,44 @@
 
 <script>
  import axios from 'axios' 
- import Rating from '@/components/Rating'
- import SongLink from '@/components/SongLink'
- import ArtistLink from '@/components/ArtistLink'
- import AlbumLink from '@/components/AlbumLink'  
+ import Rating from '@/components/Rating.vue'
+ import SongLink from '@/components/SongLink.vue'
+ import ArtistLink from '@/components/ArtistLink.vue'
+ import AlbumLink from '@/components/AlbumLink.vue'  
 
  export default {
      name: 'Player',
      data () {
          return {
              'isPaused': false,
-             'audio': undefined,
              'mode': 'playlist'
          }
      },
      computed: {
-         'playlistMode': function () {
+         playlistMode () {
              return this.mode === 'playlist'
          },
-         'hideMode': function () {
+         hideMode () {
              return this.mode === 'hide'
          },
-         'recentMode': function () {
+         recentMode () {
              return this.mode === 'recent'
          },
-         'current': function () {
+         current () {
              return this.$store.state.current
          },
-         'playlist': function () {
+         playlist () {
              return this.$store.state.playlist
          },
-         'recentlyPlayed': function () {
+         recentlyPlayed () {
              return this.$store.state.recent
          }
      },
      components: {
-         'rating': Rating,
-         'song-link': SongLink,
-         'artist-link': ArtistLink,
-         'album-link': AlbumLink,
+         Rating,
+         SongLink,
+         ArtistLink,
+         AlbumLink,
      },
      methods: {
          getRecent() {
@@ -195,9 +198,10 @@
              this.isPaused = false
 
              this.$store.commit('nextTrack')
-             this.audio.src = this.$store.state.current.URL
-             
-             this.audio.play()
+             if (this.$refs.audioPlayer) {
+                this.$refs.audioPlayer.src = this.$store.state.current.URL
+                this.$refs.audioPlayer.play()
+             }
              
              // fetch a new random track to add to the end of the playlist
              this.addRandomTrack()
@@ -229,9 +233,6 @@
      },
      created () {
          this.getData()
-     },
-     mounted () {
-         this.audio = this.$el.querySelectorAll('audio')[0]
      }
  }
 </script>

@@ -1,8 +1,11 @@
 {{define "title"}}{{.Title}} | Luister{{end}}
 
 {{define "content"}}
+<link rel="stylesheet" href="/dist/main.css" />
+<div id="nav"></div>
+<div id="player"></div>
 <div id="app"></div>
 
-<script src="/dist/build.js"></script>
+<script type="module" src="/dist/build.js"></script>
 
 {{end}}

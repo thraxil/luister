@@ -2,7 +2,10 @@
     <div>
         <h2>Tags</h2>
         <div class="list-group" v-if="tags.length">
-        <a v-for="tag in tags" v-bind:href="'/vue/#/t/' + tag.Name + '/'" class="list-group-item">{{tag.Name}}</a>
+            <router-link v-for="tag in tags" :key="tag.Name" :to="'/t/' + tag.Name + '/'" class="list-group-item">
+                {{tag.Name}}
+            </router-link>
+        </div>
     </div>
 </template>
 
@@ -16,8 +19,6 @@
              tags: []
          }
      },
-     computed: {
-     },
      methods: {
          getTags() {
              const path = `/api/tags/`
@@ -28,7 +29,6 @@
                   .catch(error => {
                       console.log(error)
                   })
-             
          }
      },
      created () {
@@ -36,7 +36,3 @@
      }
  }
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-</style>

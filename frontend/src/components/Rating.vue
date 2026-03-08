@@ -1,7 +1,7 @@
 <template>
     <nobr>
-        <span v-bind:class="'rating rating-' + rating">
-            <span v-for="n in 5"  v-bind:class="ratingIcon(n)" v-on:click="setRating(n)"></span>
+        <span :class="'rating rating-' + rating">
+            <span v-for="n in 5" :key="n" :class="ratingIcon(n)" @click="setRating(n)"></span>
         </span>
     </nobr>
 </template>
@@ -10,25 +10,20 @@
  export default {
      name: 'Rating',
      props: ['id'],
-     data () {
-         return {
-             'id': this.id
-         }
-     },
      computed: {
-         'rating': function () {
+         rating () {
              return this.$store.state.ratings[this.id]
          }
      },
      methods: {
-         ratingIcon: function(level) {
+         ratingIcon (level) {
              if (this.rating >= level) {
                  return "glyphicon glyphicon-star"
              } else {
                  return "glyphicon glyphicon-star-empty"
              }
          },
-         setRating: function(level) {
+         setRating (level) {
              this.$store.commit('setRating', {'ID': this.id, 'Rating': level})
              const path = `/r/` + this.id + `/`
              var data = new FormData()
@@ -41,7 +36,6 @@
  }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
  .rating-0 { color: #ccc; }
  .rating-1 { color: #999; }

@@ -1,5 +1,5 @@
 <template>
-    <table class="table">
+    <table class="table" v-if="tag">
         <tr>
             <th>Tag</th>
             <td>{{tag.Name}}</td>
@@ -9,25 +9,24 @@
             <th>Songs</th>
             <td>
                 <table class="table table-striped table-condensed" id="songs">
-                    <tr v-for="song in songs">
+                    <tr v-for="song in songs" :key="song.ID">
                         <td>
-                            <span class="glyphicon glyphicon-plus" v-on:click="addToPlaylist(song)"></span>
+                            <span class="glyphicon glyphicon-plus" @click="addToPlaylist(song)"></span>
                         </td>
                         <td>
-                            <song-link v-bind:id="song.ID"
-                                       v-bind:title="song.Title"></song-link>
+                            <song-link :id="song.ID"
+                                       :title="song.Title"></song-link>
                         </td>
                         <td>
-                            <artist-link v-bind:id="song.ArtistID"
-                                         v-bind:name="song.Artist"></artist-link>
+                            <artist-link :id="song.ArtistID"
+                                         :name="song.Artist"></artist-link>
                         </td>
                         <td>
-                            <album-link v-bind:id="song.AlbumID"
-                                        v-bind:name="song.Album"></album-link>
+                            <album-link :id="song.AlbumID"
+                                        :name="song.Album"></album-link>
                         </td>
                         <td>
-                            <rating v-bind:id="song.ID"
-                                    v-bind:initial-rating="song.Rating"></rating>
+                            <rating :id="song.ID"></rating>
                         </td>
                     </tr>
                 </table>
@@ -39,27 +38,24 @@
 
 <script>
  import axios from 'axios'
- import Rating from '@/components/Rating'
- import SongLink from '@/components/SongLink'
- import ArtistLink from '@/components/ArtistLink'
- import AlbumLink from '@/components/AlbumLink'  
-
+ import Rating from '@/components/Rating.vue'
+ import SongLink from '@/components/SongLink.vue'
+ import ArtistLink from '@/components/ArtistLink.vue'
+ import AlbumLink from '@/components/AlbumLink.vue'  
 
  export default {
      name: 'Tag',
      data () {
          return {
-             tag: {},
+             tag: null,
              songs: []
          }
      },
-     computed: {
-     },
      components: {
-         'rating': Rating,
-         'song-link': SongLink,
-         'artist-link': ArtistLink,
-         'album-link': AlbumLink,
+         Rating,
+         SongLink,
+         ArtistLink,
+         AlbumLink,
      },
      methods: {
          getData() {
@@ -80,10 +76,9 @@
      },
      created () {
          this.getData()
+     },
+     watch: {
+        '$route.params.tagname': 'getData'
      }
  }
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style>
-</style>

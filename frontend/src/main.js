@@ -1,33 +1,19 @@
-// The Vue build version to load with the `import` command
-// (runtime-only or standalone) has been set in webpack.base.conf with an alias.
-import Vue from 'vue'
-import App from './App'
-import Nav from './Nav'
-import Player from '@/components/Player'
+import { createApp } from 'vue'
+import App from './App.vue'
+import Nav from './Nav.vue'
+import Player from '@/components/Player.vue'
 import router from './router'
 import store from './store'
 
-Vue.config.productionTip = false
+const app = createApp(App)
+app.use(router)
+app.use(store)
+app.mount('#app')
 
-/* eslint-disable no-new */
-new Vue({
-    el: '#app',
-    store,
-    router,
-    template: '<App/>',
-    components: { App }
-})
+const nav = createApp(Nav)
+nav.use(store)
+nav.mount('#nav')
 
-new Vue({
-    el: '#nav',
-    store,
-    template: '<Nav/>',
-    components: { Nav }
-})
-
-new Vue({
-    el: '#player',
-    store,
-    template: '<Player/>',
-    components: { Player }
-})
+const player = createApp(Player)
+player.use(store)
+player.mount('#player')

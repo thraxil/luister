@@ -1,9 +1,6 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
+import { createStore } from 'vuex'
 
-Vue.use(Vuex)
-
-export default new Vuex.Store({
+export default createStore({
     state: {
         current: undefined,
         playlist: [],
@@ -37,7 +34,7 @@ export default new Vuex.Store({
             state.current = newCurrent
         },
         appendTrack(state, track) {
-            Vue.set(state.ratings, track.ID, track.Rating)
+            state.ratings[track.ID] = track.Rating
             state.playlist.push(track);
         },
         remove(state, idx) {
@@ -49,8 +46,7 @@ export default new Vuex.Store({
             state.playlist.unshift(s)
         },
         setRating(state, song) {
-            Vue.set(state.ratings, song.ID, song.Rating)
+            state.ratings[song.ID] = song.Rating
         }
     }
 })
-

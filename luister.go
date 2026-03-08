@@ -62,7 +62,7 @@ func main() {
 		return
 	}
 
-	s := Server{DB: db}
+	s := Server{DB: db, Store: &DBStore{DB: db}}
 	r := mux.NewRouter()
 	r.HandleFunc("/", s.IndexHandler)
 	r.HandleFunc("/vue/", s.VueHandler)

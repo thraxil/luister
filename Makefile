@@ -1,4 +1,4 @@
-.PHONY: all build frontend backend deploy clean help
+.PHONY: all build frontend backend deploy clean help test
 
 # Default target
 all: build
@@ -15,6 +15,11 @@ frontend:
 backend:
 	@echo "Building backend (statically linked)..."
 	CGO_ENABLED=0 go build -o luister .
+
+# Run tests
+test:
+	@echo "Running tests..."
+	go test ./...
 
 # Deploy to thunk
 deploy: build
@@ -38,6 +43,7 @@ help:
 	@echo "  build     - Alias for all"
 	@echo "  frontend  - Install dependencies and build the frontend"
 	@echo "  backend   - Build the statically linked Go binary"
+	@echo "  test      - Run unit tests"
 	@echo "  deploy    - Build and deploy to thunk"
 	@echo "  clean     - Remove binary and build artifacts"
 	@echo "  help      - Show this help message"

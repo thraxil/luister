@@ -14,7 +14,8 @@ import (
 var templateDir = "templates"
 
 type Server struct {
-	DB *gorm.DB
+	DB    *gorm.DB
+	Store Store
 }
 
 type indexPage struct {
@@ -27,22 +28,11 @@ type indexPage struct {
 }
 
 func (s Server) IndexHandler(w http.ResponseWriter, r *http.Request) {
-	var cnt int64
-	s.DB.Model(&Song{}).Count(&cnt)
-
-	var unratedCnt int64
-	s.DB.Model(&Song{}).Where("rating = 0").Count(&unratedCnt)
-
-	var artistCnt int64
-	s.DB.Model(&Artist{}).Count(&artistCnt)
-
-	var songs []Song
-	s.DB.Limit(10).Order("created_at desc").Preload(
-		"Artist").Preload("Album").Find(&songs)
-
-	var plays []Play
-	s.DB.Limit(25).Order("created_at desc").Preload(
-		"Song").Preload("Song.Artist").Preload("Song.Album").Find(&plays)
+	cnt, _ := s.Store.CountSongs()
+	unratedCnt, _ := s.Store.CountUnratedSongs()
+	artistCnt, _ := s.Store.CountArtists()
+	songs, _ := s.Store.GetRecentSongs(10)
+	plays, _ := s.Store.GetRecentPlays(25)
 
 	p := indexPage{
 		Title:        "Luister",

@@ -17,8 +17,8 @@ import (
 
 	"github.com/dhowden/tag"
 	"github.com/gorilla/mux"
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/postgres"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
@@ -41,13 +41,18 @@ func main() {
 	}
 	HakmesBase = hakmesBase
 
-	db, err := gorm.Open("postgres", dbaddr)
+	db, err := gorm.Open(postgres.Open(dbaddr), &gorm.Config{})
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer db.Close()
+	sqlDB, err := db.DB()
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer sqlDB.Close()
+
 	migrate(db)
-	db.LogMode(true)
+	db = db.Debug()
 	if *imp {
 		importcsv(db)
 		return
@@ -89,13 +94,15 @@ func main() {
 }
 
 func migrate(db *gorm.DB) {
-	db.AutoMigrate(&Artist{})
-	db.AutoMigrate(&Year{})
-	db.AutoMigrate(&Album{})
-	db.AutoMigrate(&Song{})
-	db.AutoMigrate(&File{})
-	db.AutoMigrate(&Play{})
-	db.AutoMigrate(&Tag{})
+	db.AutoMigrate(
+		&Artist{},
+		&Year{},
+		&Album{},
+		&Song{},
+		&File{},
+		&Play{},
+		&Tag{},
+	)
 
 	fmt.Println("migrated")
 }
@@ -168,7 +175,7 @@ func importcsv(db *gorm.DB) {
 
 func importFile(db *gorm.DB, filename, sha1 string, size string) {
 	// skip if we already have this file
-	var cnt int
+	var cnt int64
 	db.Model(&File{}).Where("filename = ?", filename).Or("hash = ?", sha1).Count(&cnt)
 	if cnt > 0 {
 		fmt.Println("already have it")

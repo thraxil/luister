@@ -7,8 +7,8 @@ import (
 	"strings"
 
 	"github.com/gorilla/mux"
-	"github.com/jinzhu/gorm"
 	"github.com/thraxil/paginate"
+	"gorm.io/gorm"
 )
 
 var templateDir = "templates"
@@ -27,13 +27,13 @@ type indexPage struct {
 }
 
 func (s Server) IndexHandler(w http.ResponseWriter, r *http.Request) {
-	var cnt int
+	var cnt int64
 	s.DB.Model(&Song{}).Count(&cnt)
 
-	var unratedCnt int
+	var unratedCnt int64
 	s.DB.Model(&Song{}).Where("rating = 0").Count(&unratedCnt)
 
-	var artistCnt int
+	var artistCnt int64
 	s.DB.Model(&Artist{}).Count(&artistCnt)
 
 	var songs []Song
@@ -46,9 +46,9 @@ func (s Server) IndexHandler(w http.ResponseWriter, r *http.Request) {
 
 	p := indexPage{
 		Title:        "Luister",
-		TotalSongs:   cnt,
-		UnratedCnt:   unratedCnt,
-		TotalArtists: artistCnt,
+		TotalSongs:   int(cnt),
+		UnratedCnt:   int(unratedCnt),
+		TotalArtists: int(artistCnt),
 		RecentSongs:  songs,
 		RecentPlays:  plays,
 	}
@@ -187,7 +187,7 @@ func (s Server) AlbumHandler(w http.ResponseWriter, r *http.Request) {
 	s.DB.Preload("Artist").First(&album, albumID)
 
 	var songs []Song
-	s.DB.Model(&album).Order("track asc").Preload("Files").Related(&songs)
+	s.DB.Model(&album).Order("track asc").Preload("Files").Association("Songs").Find(&songs)
 
 	p := albumPage{
 		Title: album.Name,
@@ -226,7 +226,7 @@ func (s Server) ArtistHandler(w http.ResponseWriter, r *http.Request) {
 	s.DB.First(&artist, artistID)
 
 	var albums []Album
-	s.DB.Model(&artist).Preload("Year").Order("upper(name) asc").Related(&albums)
+	s.DB.Model(&artist).Preload("Year").Order("upper(name) asc").Association("Albums").Find(&albums)
 
 	var songs []Song
 	s.DB.Where("artist_id = ?", artistID).Order("rating desc, album_id asc, track asc").Preload("Album").Find(&songs)
@@ -286,9 +286,9 @@ func (p paginatedArtists) ItemRange(offset, count int) []interface{} {
 }
 
 func (s Server) ArtistsHandler(w http.ResponseWriter, r *http.Request) {
-	var cnt int
+	var cnt int64
 	s.DB.Model(&Artist{}).Count(&cnt)
-	index := NewPaginatedArtists(s.DB, cnt)
+	index := NewPaginatedArtists(s.DB, int(cnt))
 	var p = paginate.Paginator{ItemList: index, PerPage: 100}
 	page := p.GetPage(r)
 	iartists := page.Items()

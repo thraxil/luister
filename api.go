@@ -15,7 +15,7 @@ func (s Server) RecentlyPlayedAPIHandler(w http.ResponseWriter, r *http.Request)
 	s.DB.Limit(n).Order("created_at desc").Preload(
 		"Song").Preload("Song.Artist").Preload("Song.Album").Preload("Song.Files").Find(&plays)
 
-	randomSongs := make([]randomSong, n)
+	randomSongs := make([]randomSong, len(plays))
 	for i, play := range plays {
 		randomSongs[i] = randomSong{
 			Title:     play.Song.DisplayTitle(),
@@ -164,7 +164,7 @@ func (s Server) NRandomSongs(n int) []randomSong {
 		"Files").Preload(
 		"Artist").Preload("Album").Find(&songs)
 
-	randomSongs := make([]randomSong, n)
+	randomSongs := make([]randomSong, len(songs))
 	for i, song := range songs {
 		randomSongs[i] = randomSong{
 			Title:     song.DisplayTitle(),

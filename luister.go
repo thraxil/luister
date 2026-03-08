@@ -7,7 +7,6 @@ import (
 	"flag"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -49,9 +48,14 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer sqlDB.Close()
+	defer func() {
+		_ = sqlDB.Close()
+	}()
 
-	migrate(db)
+	err = migrate(db)
+	if err != nil {
+		log.Fatal(err)
+	}
 	db = db.Debug()
 	if *imp {
 		importcsv(db)
@@ -93,8 +97,8 @@ func main() {
 	log.Fatal(http.ListenAndServe(":8009", r))
 }
 
-func migrate(db *gorm.DB) {
-	db.AutoMigrate(
+func migrate(db *gorm.DB) error {
+	err := db.AutoMigrate(
 		&Artist{},
 		&Year{},
 		&Album{},
@@ -103,8 +107,12 @@ func migrate(db *gorm.DB) {
 		&Play{},
 		&Tag{},
 	)
+	if err != nil {
+		return err
+	}
 
 	fmt.Println("migrated")
+	return nil
 }
 
 func stripnulls(db *gorm.DB) {
@@ -268,6 +276,6 @@ func getFromHakmes(url string) ([]byte, error) {
 	if resp.Status != "200 OK" {
 		return nil, errors.New("404, probably")
 	}
-	b, _ := ioutil.ReadAll(resp.Body)
+	b, _ := io.ReadAll(resp.Body)
 	return b, nil
 }

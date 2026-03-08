@@ -1,4 +1,4 @@
-.PHONY: all build frontend backend deploy clean help test
+.PHONY: all build frontend backend deploy clean help test lint
 
 # Default target
 all: build
@@ -20,6 +20,11 @@ backend:
 test:
 	@echo "Running tests..."
 	go test ./...
+
+# Run lint
+lint:
+	@echo "Running linter..."
+	golangci-lint run
 
 # Deploy to thunk
 deploy: build
@@ -44,6 +49,7 @@ help:
 	@echo "  frontend  - Install dependencies and build the frontend"
 	@echo "  backend   - Build the statically linked Go binary"
 	@echo "  test      - Run unit tests"
+	@echo "  lint      - Run golangci-lint"
 	@echo "  deploy    - Build and deploy to thunk"
 	@echo "  clean     - Remove binary and build artifacts"
 	@echo "  help      - Show this help message"

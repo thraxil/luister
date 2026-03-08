@@ -40,7 +40,10 @@ func (s Server) RecentlyPlayedAPIHandler(w http.ResponseWriter, r *http.Request)
 
 	b, _ := json.Marshal(p)
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(b)
+	_, err := w.Write(b)
+	if err != nil {
+		fmt.Printf("Error writing response: %v\n", err)
+	}
 }
 
 func (s Server) PlayHandler(w http.ResponseWriter, r *http.Request) {
@@ -49,7 +52,10 @@ func (s Server) PlayHandler(w http.ResponseWriter, r *http.Request) {
 
 	play := Play{SongID: songID}
 	s.DB.Create(&play)
-	fmt.Fprintf(w, "ok")
+	_, err := fmt.Fprintf(w, "ok")
+	if err != nil {
+		fmt.Printf("Error writing response: %v\n", err)
+	}
 }
 
 func (s Server) RatingHandler(w http.ResponseWriter, r *http.Request) {
@@ -65,7 +71,10 @@ func (s Server) RatingHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	song.Rating = submitted
 	s.DB.Save(&song)
-	fmt.Fprintf(w, "ok")
+	_, err = fmt.Fprintf(w, "ok")
+	if err != nil {
+		fmt.Printf("Error writing response: %v\n", err)
+	}
 }
 
 func (s Server) TagAPIHandler(w http.ResponseWriter, r *http.Request) {
@@ -111,7 +120,10 @@ func (s Server) TagAPIHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	b, _ := json.Marshal(p)
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(b)
+	_, err := w.Write(b)
+	if err != nil {
+		fmt.Printf("Error writing response: %v\n", err)
+	}
 }
 
 func (s Server) TagsAPIHandler(w http.ResponseWriter, r *http.Request) {
@@ -123,7 +135,10 @@ func (s Server) TagsAPIHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	b, _ := json.Marshal(p)
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(b)
+	_, err := w.Write(b)
+	if err != nil {
+		fmt.Printf("Error writing response: %v\n", err)
+	}
 }
 
 type randomSong struct {
@@ -173,7 +188,10 @@ func (s Server) NRandomSongs(n int) []randomSong {
 func (s Server) SingleRandomHandler(w http.ResponseWriter, r *http.Request) {
 	b, _ := json.Marshal(s.NRandomSongs(1)[0])
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(b)
+	_, err := w.Write(b)
+	if err != nil {
+		fmt.Printf("Error writing response: %v\n", err)
+	}
 }
 
 func (s Server) RandomPlaylistHandler(w http.ResponseWriter, r *http.Request) {
@@ -183,5 +201,8 @@ func (s Server) RandomPlaylistHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	b, _ := json.Marshal(p)
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(b)
+	_, err := w.Write(b)
+	if err != nil {
+		fmt.Printf("Error writing response: %v\n", err)
+	}
 }

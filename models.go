@@ -40,7 +40,7 @@ func (a Artist) UpdateName(db *gorm.DB, newName string) Artist {
 
 		// update albums
 		var albums []Album
-		db.Model(&a).Association("Albums").Find(&albums)
+		_ = db.Model(&a).Association("Albums").Find(&albums)
 		for _, album := range albums {
 			album.Artist = nartist
 			db.Save(&album)
@@ -48,7 +48,7 @@ func (a Artist) UpdateName(db *gorm.DB, newName string) Artist {
 
 		// update songs
 		var songs []Song
-		db.Model(&a).Association("Songs").Find(&songs)
+		_ = db.Model(&a).Association("Songs").Find(&songs)
 		for _, song := range songs {
 			song.Artist = nartist
 			db.Save(&song)
@@ -99,7 +99,7 @@ func (a Album) UpdateName(db *gorm.DB, newName string) Album {
 
 		// update songs
 		var songs []Song
-		db.Model(&a).Association("Songs").Find(&songs)
+		_ = db.Model(&a).Association("Songs").Find(&songs)
 		for _, song := range songs {
 			song.Album = nalbum
 			db.Save(&song)

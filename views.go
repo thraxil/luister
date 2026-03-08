@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"html/template"
 	"net/http"
 	"path/filepath"
@@ -43,7 +44,10 @@ func (s Server) IndexHandler(w http.ResponseWriter, r *http.Request) {
 		RecentPlays:  plays,
 	}
 	t := getTemplate("index.html")
-	t.Execute(w, p)
+	err := t.Execute(w, p)
+	if err != nil {
+		fmt.Printf("Template execute error: %v\n", err)
+	}
 }
 
 func (s Server) VueHandler(w http.ResponseWriter, r *http.Request) {
@@ -76,7 +80,10 @@ func (s Server) SongHandler(w http.ResponseWriter, r *http.Request) {
 		File:  file,
 	}
 	t := getTemplate("song.html")
-	t.Execute(w, p)
+	err := t.Execute(w, p)
+	if err != nil {
+		fmt.Printf("Template execute error: %v\n", err)
+	}
 }
 
 func (s Server) EditSongHandler(w http.ResponseWriter, r *http.Request) {
@@ -89,7 +96,7 @@ func (s Server) EditSongHandler(w http.ResponseWriter, r *http.Request) {
 	newName := r.FormValue("title")
 
 	song = song.UpdateTitle(s.DB, newName)
-	http.Redirect(w, r, song.URL(), 302)
+	http.Redirect(w, r, song.URL(), http.StatusFound)
 }
 
 func (s Server) TagSongHandler(w http.ResponseWriter, r *http.Request) {
@@ -103,17 +110,17 @@ func (s Server) TagSongHandler(w http.ResponseWriter, r *http.Request) {
 
 	// delete existing
 	for _, t := range song.Tags {
-		s.DB.Model(&song).Association("Tags").Delete(&t)
+		_ = s.DB.Model(&song).Association("Tags").Delete(&t)
 	}
 
 	for _, t := range tags {
 		t = strings.Trim(t, " \n\r\t,\"'!?")
 		var tag Tag
 		s.DB.FirstOrCreate(&tag, Tag{Name: t})
-		s.DB.Model(&song).Association("Tags").Append(tag)
+		_ = s.DB.Model(&song).Association("Tags").Append(tag)
 	}
 
-	http.Redirect(w, r, song.URL(), 302)
+	http.Redirect(w, r, song.URL(), http.StatusFound)
 }
 
 type tagPage struct {
@@ -143,7 +150,10 @@ func (s Server) TagHandler(w http.ResponseWriter, r *http.Request) {
 		Songs: songs,
 	}
 	t := getTemplate("tag.html")
-	t.Execute(w, p)
+	err := t.Execute(w, p)
+	if err != nil {
+		fmt.Printf("Template execute error: %v\n", err)
+	}
 }
 
 type tagsPage struct {
@@ -160,7 +170,10 @@ func (s Server) TagsHandler(w http.ResponseWriter, r *http.Request) {
 		Tags:  tags,
 	}
 	t := getTemplate("tags.html")
-	t.Execute(w, p)
+	err := t.Execute(w, p)
+	if err != nil {
+		fmt.Printf("Template execute error: %v\n", err)
+	}
 }
 
 type albumPage struct {
@@ -177,7 +190,7 @@ func (s Server) AlbumHandler(w http.ResponseWriter, r *http.Request) {
 	s.DB.Preload("Artist").First(&album, albumID)
 
 	var songs []Song
-	s.DB.Model(&album).Order("track asc").Preload("Files").Association("Songs").Find(&songs)
+	_ = s.DB.Model(&album).Order("track asc").Preload("Files").Association("Songs").Find(&songs)
 
 	p := albumPage{
 		Title: album.Name,
@@ -185,7 +198,10 @@ func (s Server) AlbumHandler(w http.ResponseWriter, r *http.Request) {
 		Songs: songs,
 	}
 	t := getTemplate("album.html")
-	t.Execute(w, p)
+	err := t.Execute(w, p)
+	if err != nil {
+		fmt.Printf("Template execute error: %v\n", err)
+	}
 }
 
 func (s Server) EditAlbumHandler(w http.ResponseWriter, r *http.Request) {
@@ -198,7 +214,7 @@ func (s Server) EditAlbumHandler(w http.ResponseWriter, r *http.Request) {
 	newName := r.FormValue("name")
 
 	album = album.UpdateName(s.DB, newName)
-	http.Redirect(w, r, album.URL(), 302)
+	http.Redirect(w, r, album.URL(), http.StatusFound)
 }
 
 type artistPage struct {
@@ -216,7 +232,7 @@ func (s Server) ArtistHandler(w http.ResponseWriter, r *http.Request) {
 	s.DB.First(&artist, artistID)
 
 	var albums []Album
-	s.DB.Model(&artist).Preload("Year").Order("upper(name) asc").Association("Albums").Find(&albums)
+	_ = s.DB.Model(&artist).Preload("Year").Order("upper(name) asc").Association("Albums").Find(&albums)
 
 	var songs []Song
 	s.DB.Where("artist_id = ?", artistID).Order("rating desc, album_id asc, track asc").Preload("Album").Find(&songs)
@@ -228,7 +244,10 @@ func (s Server) ArtistHandler(w http.ResponseWriter, r *http.Request) {
 		Songs:  songs,
 	}
 	t := getTemplate("artist.html")
-	t.Execute(w, p)
+	err := t.Execute(w, p)
+	if err != nil {
+		fmt.Printf("Template execute error: %v\n", err)
+	}
 }
 
 func (s Server) EditArtistHandler(w http.ResponseWriter, r *http.Request) {
@@ -241,7 +260,7 @@ func (s Server) EditArtistHandler(w http.ResponseWriter, r *http.Request) {
 	newName := r.FormValue("name")
 
 	artist = artist.UpdateName(s.DB, newName)
-	http.Redirect(w, r, artist.URL(), 302)
+	http.Redirect(w, r, artist.URL(), http.StatusFound)
 }
 
 type artistsPage struct {
@@ -293,7 +312,10 @@ func (s Server) ArtistsHandler(w http.ResponseWriter, r *http.Request) {
 		Page:    page,
 	}
 	t := getTemplate("artists.html")
-	t.Execute(w, ap)
+	err := t.Execute(w, ap)
+	if err != nil {
+		fmt.Printf("Template execute error: %v\n", err)
+	}
 }
 
 type searchPage struct {
@@ -309,7 +331,7 @@ func (s Server) SearchHandler(w http.ResponseWriter, r *http.Request) {
 	// TODO: strip/normalize
 
 	if query == "" {
-		http.Redirect(w, r, "/", 302)
+		http.Redirect(w, r, "/", http.StatusFound)
 		return
 	}
 
@@ -330,7 +352,10 @@ func (s Server) SearchHandler(w http.ResponseWriter, r *http.Request) {
 		Songs:   songs,
 	}
 	t := getTemplate("search.html")
-	t.Execute(w, p)
+	err := t.Execute(w, p)
+	if err != nil {
+		fmt.Printf("Template execute error: %v\n", err)
+	}
 }
 
 type randomPage struct {
@@ -349,7 +374,10 @@ func (s Server) RandomHandler(w http.ResponseWriter, r *http.Request) {
 		Songs: songs,
 	}
 	t := getTemplate("random.html")
-	t.Execute(w, p)
+	err := t.Execute(w, p)
+	if err != nil {
+		fmt.Printf("Template execute error: %v\n", err)
+	}
 }
 
 func getTemplate(filename string) *template.Template {

@@ -40,7 +40,11 @@ func main() {
 	}
 	HakmesBase = hakmesBase
 
-	db, err := gorm.Open(postgres.Open(dbaddr), &gorm.Config{})
+	// Albums with no artist have artist_id 0, so AutoMigrate must not add the
+	// albums->artists foreign key (it fails on those rows and luister won't start).
+	db, err := gorm.Open(postgres.Open(dbaddr), &gorm.Config{
+		DisableForeignKeyConstraintWhenMigrating: true,
+	})
 	if err != nil {
 		log.Fatal(err)
 	}
